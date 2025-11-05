@@ -10,16 +10,37 @@ Privacy-first audio summarization for sales discovery calls using on-device AI.
 - **Privacy-first**: Audio and transcripts never saved, only summaries
 - **CSV export** for CRM integration (Salesforce, HubSpot, etc.)
 
-## Quick Start
+## Installation
 
-### Prerequisites
+### For End Users (Recommended)
+
+**Install via Homebrew:**
+
+```bash
+# Add the tap
+brew tap adbutler007/audio-summary
+
+# Install
+brew install --cask audio-summary
+
+# Download the LLM model
+ollama pull qwen3:4b-instruct
+```
+
+Then launch **Audio Summary** from your Applications folder or menu bar.
+
+See the [User Guide](audio_summary_app/USER_GUIDE.md) for complete setup instructions.
+
+### For Developers
+
+#### Prerequisites
 
 1. **macOS** with Apple Silicon (M1/M2/M3/M4)
 2. **Python 3.11+**
 3. **Ollama** for LLM inference
 4. **uv** for dependency management
 
-### Installation
+#### Installation
 
 ```bash
 # Install uv (if not already installed)
@@ -32,10 +53,23 @@ brew install ollama
 ollama pull qwen3:4b-instruct
 
 # Install dependencies
+cd audio_summary_app
 uv sync
 ```
 
-### Usage
+## Usage
+
+### GUI Mode (Recommended)
+
+```bash
+uv run audio-summary-gui
+```
+
+Or simply launch the **Audio Summary** app from your menu bar.
+
+See [User Guide](audio_summary_app/USER_GUIDE.md) for complete usage instructions.
+
+### CLI Mode (For developers)
 
 #### Interactive Mode (Real-time Recording)
 
@@ -49,16 +83,21 @@ uv run python -m audio_summary_app
 #### Batch Mode (Process Audio File)
 
 ```bash
-uv run python process_audio_file.py path/to/audio.mp3
+uv run python audio_summary_app/process_audio_file.py path/to/audio.mp3
 ```
 
 ## Output Files
 
-After each recording, three files are generated in `./summaries/`:
+After each recording, a folder is created with:
 
-1. **`summary_YYYYMMDD_HHMMSS.txt`** - Human-readable summary (3-5 paragraphs)
-2. **`summary_YYYYMMDD_HHMMSS.json`** - Structured data (contacts, companies, deals)
-3. **`meetings.csv`** - Cumulative spreadsheet (one row per meeting)
+```
+~/Documents/Meeting Summaries/
+└── 2025-11-05 Acme Capital - John Smith/
+    ├── summary.txt    # Human-readable summary (3-5 paragraphs)
+    └── data.json      # Structured data (contacts, companies, deals)
+```
+
+Plus a cumulative `meetings.csv` with all meetings.
 
 ## Configuration
 
@@ -93,16 +132,32 @@ Edit `src/audio_summary_app/config.py` to customize:
 
 ## Documentation
 
+- **[User Guide](audio_summary_app/USER_GUIDE.md)** - Complete usage instructions
+- **[Deployment Guide](audio_summary_app/DEPLOYMENT.md)** - Building and distributing the app
 - [Structured Data Extraction](audio_summary_app/STRUCTURED_DATA.md)
-- [CSV Export](audio_summary_app/CSV_EXAMPLE.md)
+- [CSV Export Examples](audio_summary_app/CSV_EXAMPLE.md)
+
+## Features Completed
+
+- ✅ macOS GUI with menu bar icon
+- ✅ Meeting Browser with search and filters
+- ✅ Auto-naming using contact/company data
+- ✅ Settings window
+- ✅ First-Run Setup Wizard
+- ✅ Homebrew Cask formula
+- ✅ Privacy-first architecture
+- ✅ Real-time transcription and summarization
+- ✅ Structured data extraction
+- ✅ CSV export for CRM integration
 
 ## Roadmap
 
-- [ ] macOS GUI with menu bar icon
-- [ ] Auto-detect Zoom/Teams audio (BlackHole integration)
-- [ ] Meeting Browser with search and filters
-- [ ] Homebrew distribution
+- [ ] Auto-detect Zoom/Teams audio (process monitoring)
+- [ ] Zoom/Teams auto-start/stop
+- [ ] Quick Look plugin for Finder previews
+- [ ] Spotlight integration
 - [ ] Windows support (Faster-Whisper backend)
+- [ ] Code signing and notarization
 
 ## License
 
