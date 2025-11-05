@@ -1,6 +1,6 @@
-# Audio Summary App
+# Private Notes
 
-Privacy-first audio summarization for sales discovery calls using on-device AI.
+Privacy-first audio transcription and summarization for sales discovery calls using on-device AI.
 
 ## Features
 
@@ -18,16 +18,16 @@ Privacy-first audio summarization for sales discovery calls using on-device AI.
 
 ```bash
 # Add the tap
-brew tap adbutler007/audio-summary
+brew tap adbutler007/private-notes
 
 # Install
-brew install --cask audio-summary
+brew install --cask private-notes
 
 # Download the LLM model
 ollama pull qwen3:4b-instruct
 ```
 
-Then launch **Audio Summary** from your Applications folder or menu bar.
+Then launch **Private Notes** from your Applications folder or menu bar.
 
 See the [User Guide](audio_summary_app/USER_GUIDE.md) for complete setup instructions.
 
@@ -65,7 +65,7 @@ uv sync
 uv run audio-summary-gui
 ```
 
-Or simply launch the **Audio Summary** app from your menu bar.
+Or simply launch the **Private Notes** app from your menu bar.
 
 See [User Guide](audio_summary_app/USER_GUIDE.md) for complete usage instructions.
 

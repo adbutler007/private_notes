@@ -11,15 +11,15 @@ OPTIONS = {
     'argv_emulation': False,
     'iconfile': 'assets/icon.icns',  # We'll create this
     'plist': {
-        'CFBundleName': 'Audio Summary',
-        'CFBundleDisplayName': 'Audio Summary',
-        'CFBundleIdentifier': 'com.audiosum mary.app',
+        'CFBundleName': 'Private Notes',
+        'CFBundleDisplayName': 'Private Notes',
+        'CFBundleIdentifier': 'com.privatenotes.app',
         'CFBundleVersion': '0.1.0',
         'CFBundleShortVersionString': '0.1.0',
         'LSMinimumSystemVersion': '11.0',  # macOS Big Sur
         'LSUIElement': True,  # This makes it a menu bar app (no dock icon)
-        'NSMicrophoneUsageDescription': 'Audio Summary needs microphone access to record and transcribe meetings.',
-        'NSAppleEventsUsageDescription': 'Audio Summary may interact with other apps.',
+        'NSMicrophoneUsageDescription': 'Private Notes needs microphone access to record and transcribe meetings.',
+        'NSAppleEventsUsageDescription': 'Private Notes may interact with other apps.',
     },
     'packages': [
         'audio_summary_app',
@@ -48,7 +48,7 @@ OPTIONS = {
 }
 
 setup(
-    name='AudioSummary',
+    name='PrivateNotes',
     app=APP,
     data_files=DATA_FILES,
     options={'py2app': OPTIONS},
