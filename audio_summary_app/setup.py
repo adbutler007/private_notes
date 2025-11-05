@@ -5,11 +5,12 @@ Creates a standalone .app for macOS
 
 from setuptools import setup
 
-APP = ['src/audio_summary_app/gui/app.py']
+APP = ['launch_gui.py']
 DATA_FILES = []
 OPTIONS = {
     'argv_emulation': False,
-    'iconfile': 'assets/icon.icns',  # We'll create this
+    'alias': True,  # Use alias mode - simpler and more reliable with complex dependencies
+    'iconfile': 'assets/icon.icns',
     'plist': {
         'CFBundleName': 'Private Notes',
         'CFBundleDisplayName': 'Private Notes',
@@ -30,6 +31,8 @@ OPTIONS = {
         'ollama',
         'pydantic',
         'psutil',
+        'jaraco',
+        'jaraco.text',
     ],
     'includes': [
         'audio_summary_app.gui',
@@ -44,6 +47,8 @@ OPTIONS = {
         'scipy',
         'IPython',
         'jupyter',
+        'torch',
+        'tensorflow',
     ],
 }
 

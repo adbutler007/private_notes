@@ -24,16 +24,16 @@ uv run python setup.py py2app
 echo ""
 
 # Check if build succeeded
-if [ -d "dist/Audio Summary.app" ]; then
+if [ -d "dist/Private Notes.app" ]; then
     echo "✓ Build successful!"
     echo ""
-    echo "App location: dist/Audio Summary.app"
+    echo "App location: dist/Private Notes.app"
     echo ""
     echo "To test the app:"
-    echo "  open 'dist/Audio Summary.app'"
+    echo "  open 'dist/Private Notes.app'"
     echo ""
-    echo "To create DMG for distribution:"
-    echo "  ./create_dmg.sh"
+    echo "To create distribution package:"
+    echo "  cd dist && zip -r PrivateNotes-0.1.0.zip 'Private Notes.app'"
     echo ""
 else
     echo "✗ Build failed!"
