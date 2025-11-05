@@ -152,24 +152,56 @@ class AudioSummaryApp:
             self.recent_menu.addAction(no_action)
             return
 
-        # Get summary text files sorted by modification time
-        summary_files = sorted(
-            output_dir.glob("summary_*.txt"),
-            key=lambda p: p.stat().st_mtime,
-            reverse=True
-        )[:5]  # Show last 5
+        # Get summaries (both folder structure and flat structure)
+        import json
+        summaries = []
 
-        if not summary_files:
+        # New folder structure: YYYY-MM-DD Company - Contact/summary.txt
+        for summary_file in output_dir.glob("*/summary.txt"):
+            folder = summary_file.parent
+            folder_name = folder.name
+            json_file = folder / "data.json"
+
+            # Load company/contact from JSON if available
+            display_name = folder_name  # Default to folder name
+            if json_file.exists():
+                try:
+                    with open(json_file, 'r') as f:
+                        data = json.load(f)
+                        contacts = data.get('contacts', [])
+                        companies = data.get('companies', [])
+                        if companies and companies[0].get('name'):
+                            company = companies[0]['name']
+                            if contacts and contacts[0].get('name'):
+                                display_name = f"{company} - {contacts[0]['name']}"
+                            else:
+                                display_name = company
+                        elif contacts and contacts[0].get('name'):
+                            display_name = contacts[0]['name']
+                except:
+                    pass
+
+            summaries.append((summary_file, display_name, summary_file.stat().st_mtime))
+
+        # Old flat structure: summary_YYYYMMDD_HHMMSS.txt
+        for summary_file in output_dir.glob("summary_*.txt"):
+            if summary_file.parent != output_dir:  # Skip files in subfolders
+                continue
+            timestamp = summary_file.stem.replace("summary_", "")
+            summaries.append((summary_file, timestamp, summary_file.stat().st_mtime))
+
+        # Sort by modification time and take most recent 5
+        summaries.sort(key=lambda x: x[2], reverse=True)
+        summaries = summaries[:5]
+
+        if not summaries:
             no_action = QAction("No summaries yet", self.recent_menu)
             no_action.setEnabled(False)
             self.recent_menu.addAction(no_action)
             return
 
-        for summary_file in summary_files:
-            # TODO: Read contact/company name from JSON for better display
-            # For now, show timestamp
-            timestamp = summary_file.stem.replace("summary_", "")
-            action = QAction(timestamp, self.recent_menu)
+        for summary_file, display_name, _ in summaries:
+            action = QAction(display_name, self.recent_menu)
             action.triggered.connect(lambda checked, f=summary_file: self.open_summary(f))
             self.recent_menu.addAction(action)
 

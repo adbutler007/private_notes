@@ -112,7 +112,7 @@ class MeetingBrowser(QMainWindow):
         layout.addWidget(splitter)
 
     def load_summaries(self):
-        """Load all summaries from output directory"""
+        """Load all summaries from output directory (supports both folder and flat structure)"""
         output_dir = Path(self.config.output_dir)
         if not output_dir.exists():
             return
@@ -120,8 +120,57 @@ class MeetingBrowser(QMainWindow):
         summaries = []
         companies = set()
 
-        # Get all summary files
-        for txt_file in sorted(output_dir.glob("summary_*.txt"), key=lambda p: p.stat().st_mtime, reverse=True):
+        # Method 1: New folder structure - one folder per meeting
+        # Format: YYYY-MM-DD Company - Contact/summary.txt
+        for summary_file in output_dir.glob("*/summary.txt"):
+            folder = summary_file.parent
+            folder_name = folder.name
+
+            # Try to parse timestamp from folder name (YYYY-MM-DD format at start)
+            try:
+                date_str = folder_name[:10]  # First 10 chars should be YYYY-MM-DD
+                timestamp = datetime.strptime(date_str, "%Y-%m-%d")
+            except:
+                # Fallback to file modification time
+                timestamp = datetime.fromtimestamp(summary_file.stat().st_mtime)
+
+            # Load JSON for structured data
+            json_file = folder / "data.json"
+            contact_name = ""
+            company_name = ""
+
+            if json_file.exists():
+                try:
+                    with open(json_file, 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                        contacts = data.get('contacts', [])
+                        companies_list = data.get('companies', [])
+
+                        if contacts:
+                            contact_name = contacts[0].get('name', '')
+                        if companies_list:
+                            company_name = companies_list[0].get('name', '')
+                            if company_name:
+                                companies.add(company_name)
+                except:
+                    pass
+
+            summaries.append({
+                'txt_file': summary_file,
+                'json_file': json_file if json_file.exists() else None,
+                'timestamp': timestamp,
+                'contact_name': contact_name,
+                'company_name': company_name,
+                'folder': folder
+            })
+
+        # Method 2: Old flat structure - all files in one directory
+        # Format: summary_YYYYMMDD_HHMMSS.txt
+        for txt_file in output_dir.glob("summary_*.txt"):
+            # Skip if this is inside a subfolder (already handled above)
+            if txt_file.parent != output_dir:
+                continue
+
             timestamp_str = txt_file.stem.replace("summary_", "")
 
             try:
@@ -156,7 +205,11 @@ class MeetingBrowser(QMainWindow):
                 'timestamp': timestamp,
                 'contact_name': contact_name,
                 'company_name': company_name,
+                'folder': None
             })
+
+        # Sort by timestamp (most recent first)
+        summaries.sort(key=lambda x: x['timestamp'], reverse=True)
 
         self.current_summaries = summaries
 

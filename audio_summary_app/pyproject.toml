@@ -70,6 +70,7 @@ all = [
 
 [project.scripts]
 audio-summary = "audio_summary_app.__main__:main"
+audio-summary-gui = "audio_summary_app.gui.app:main"
 audio-summary-demo = "audio_summary_app.demo:main"
 
 [project.urls]

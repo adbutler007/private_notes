@@ -104,18 +104,23 @@ class RecordingWorker(QObject):
                 self.config.data_extraction_prompt
             )
 
-            # Save outputs
+            # Save outputs with auto-naming
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             output_dir = Path(self.config.output_dir)
             output_dir.mkdir(parents=True, exist_ok=True)
 
+            # Generate folder name from extracted data
+            folder_name = self._generate_folder_name(structured_data, timestamp)
+            meeting_folder = output_dir / folder_name
+            meeting_folder.mkdir(parents=True, exist_ok=True)
+
             # Save summary
-            summary_path = output_dir / f"summary_{timestamp}.txt"
+            summary_path = meeting_folder / "summary.txt"
             with open(summary_path, 'w', encoding='utf-8') as f:
                 f.write(final_summary)
 
             # Save JSON
-            json_path = output_dir / f"summary_{timestamp}.json"
+            json_path = meeting_folder / "data.json"
             with open(json_path, 'w', encoding='utf-8') as f:
                 json.dump(structured_data, f, indent=2, ensure_ascii=False)
 
@@ -165,6 +170,53 @@ class RecordingWorker(QObject):
     def stop(self):
         """Signal the worker to stop"""
         self.should_stop = True
+
+    def _generate_folder_name(self, data: dict, timestamp: str) -> str:
+        """
+        Generate a meaningful folder name from extracted data
+        Format: YYYY-MM-DD Company Name - Contact Name
+        Fallback: YYYY-MM-DD Meeting HHMMSS
+        """
+        import re
+
+        # Get date from timestamp
+        date_obj = datetime.strptime(timestamp, "%Y%m%d_%H%M%S")
+        date_str = date_obj.strftime("%Y-%m-%d")
+        time_str = date_obj.strftime("%H%M%S")
+
+        # Extract company and contact
+        contacts = data.get('contacts', [])
+        companies = data.get('companies', [])
+
+        company_name = ""
+        contact_name = ""
+
+        if companies and companies[0].get('name'):
+            company_name = companies[0]['name']
+
+        if contacts and contacts[0].get('name'):
+            contact_name = contacts[0]['name']
+
+        # Sanitize names (remove invalid characters for folder names)
+        def sanitize(name):
+            # Remove or replace invalid characters
+            name = re.sub(r'[<>:"/\\|?*]', '', name)
+            # Replace multiple spaces with single space
+            name = re.sub(r'\s+', ' ', name)
+            # Trim
+            return name.strip()
+
+        # Build folder name
+        if company_name and contact_name:
+            folder_name = f"{date_str} {sanitize(company_name)} - {sanitize(contact_name)}"
+        elif company_name:
+            folder_name = f"{date_str} {sanitize(company_name)}"
+        elif contact_name:
+            folder_name = f"{date_str} {sanitize(contact_name)}"
+        else:
+            folder_name = f"{date_str} Meeting {time_str}"
+
+        return folder_name
 
     def _append_to_csv(self, data: dict, timestamp: str):
         """Append structured data to CSV file"""
