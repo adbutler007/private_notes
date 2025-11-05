@@ -1,0 +1,144 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+venv/
+ENV/
+env/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Project-specific: Audio Summary App
+audio_summary_app/summaries/
+audio_summary_app/test_summaries/
+audio_summary_app/recordings/
+audio_summary_app/temp/
+audio_summary_app/*.mp3
+audio_summary_app/*.wav
+audio_summary_app/*.m4a
+audio_summary_app/test/
+audio_summary_app/tests/output/
+
+# Audio and text files (test data)
+*.mp3
+*.wav
+*.m4a
+*.epub
+first_meeting.mp3
+transcript.txt
+discovery_call_transcript.txt
+discovery_call_transcript.epub
+DANIEL_SCHMACTENBERGER_IN_SEARCH_OF_THIRD_ATTRACTOR_FULL_TRANSCRIPT.txt
+
+# Interim documentation and test files
+ULTRATHINK.md
+DEPLOYMENT_PLAN.md
+TEST_*.md
+test_*.py
+demo_*.py
+example_*.py
+scratch_*.py
+audio_summary_app/demo.py
+audio_summary_app/run.py
+audio_summary_app/run_demo.py
+
+# Old/duplicate files (keep only src/ versions)
+audio_summary_app/audio_capture.py
+audio_summary_app/config.py
+audio_summary_app/main.py
+audio_summary_app/summarizer.py
+audio_summary_app/transcriber.py
+audio_summary_app/transcript_buffer.py
+audio_summary_app/requirements.txt
+
+# Logs
+*.log
+logs/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+*.ipynb
+
+# Environment variables
+.env
+.env.local
+
+# Distribution / Packaging
+*.dmg
+*.pkg
+*.app/
+
+# MLX/ML Models cached locally
+.cache/
+models/
+*.gguf
+*.safetensors
+
+# Homebrew
+homebrew-audio-summary/
+
+# CSV exports (user data)
+*.csv
+!audio_summary_app/CSV_EXAMPLE.md
+
+# Sensitive data
+secrets.json
+credentials.json
+api_keys.txt

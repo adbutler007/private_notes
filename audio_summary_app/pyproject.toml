@@ -1,0 +1,112 @@
+[project]
+name = "audio-summary-app"
+version = "0.1.0"
+description = "A privacy-focused desktop application that captures audio, transcribes it in real-time, and generates intelligent summaries using on-device AI models"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [
+    { name = "Adam Butler" }
+]
+keywords = ["audio", "transcription", "summarization", "privacy", "whisper", "llama"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "Topic :: Multimedia :: Sound/Audio :: Capture/Recording",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Office/Business",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    "sounddevice>=0.4.6",
+    "numpy>=1.24.0",
+    "mlx-whisper>=0.1.0",  # Optimized for Apple Silicon
+    "ollama>=0.1.0",
+    "python-dateutil>=2.8.2",
+    "pydantic>=2.0.0",  # For structured data extraction
+]
+
+[project.optional-dependencies]
+# Alternative STT backend
+faster-whisper-backend = [
+    "faster-whisper>=0.10.0",
+]
+
+# Alternative LLM backends (if not using Ollama)
+llama-cpp = [
+    "llama-cpp-python>=0.2.0",
+]
+
+transformers = [
+    "transformers>=4.30.0",
+    "torch>=2.0.0",
+]
+
+# Development dependencies
+dev = [
+    "pytest>=7.0.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+]
+
+# All extras combined
+all = [
+    "audio-summary-app[faster-whisper-backend,llama-cpp,transformers,dev]",
+]
+
+[project.scripts]
+audio-summary = "audio_summary_app.__main__:main"
+audio-summary-demo = "audio_summary_app.demo:main"
+
+[project.urls]
+Homepage = "https://github.com/yourusername/audio-summary-app"
+Documentation = "https://github.com/yourusername/audio-summary-app/blob/main/README.md"
+Repository = "https://github.com/yourusername/audio-summary-app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/audio_summary_app"]
+
+[dependency-groups]
+dev = [
+    "pytest>=7.0.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+]
+
+[tool.black]
+line-length = 100
+target-version = ["py39", "py310", "py311", "py312"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+select = ["E", "F", "W", "I", "N", "UP"]
+ignore = []
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
