@@ -30,6 +30,8 @@ dependencies = [
     "ollama>=0.1.0",
     "python-dateutil>=2.8.2",
     "pydantic>=2.0.0",  # For structured data extraction
+    "PyQt6>=6.6.0",  # GUI framework
+    "psutil>=5.9.0",  # Process monitoring (Zoom/Teams detection)
 ]
 
 [project.optional-dependencies]
@@ -54,6 +56,11 @@ dev = [
     "black>=23.0.0",
     "ruff>=0.1.0",
     "mypy>=1.0.0",
+]
+
+# macOS packaging
+macos = [
+    "py2app>=0.28.0",
 ]
 
 # All extras combined

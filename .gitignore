@@ -56,6 +56,7 @@ audio_summary_app/*.wav
 audio_summary_app/*.m4a
 audio_summary_app/test/
 audio_summary_app/tests/output/
+!audio_summary_app/tests/*.py
 
 # Audio and text files (test data)
 *.mp3
@@ -72,13 +73,13 @@ DANIEL_SCHMACTENBERGER_IN_SEARCH_OF_THIRD_ATTRACTOR_FULL_TRANSCRIPT.txt
 ULTRATHINK.md
 DEPLOYMENT_PLAN.md
 TEST_*.md
-test_*.py
 demo_*.py
 example_*.py
 scratch_*.py
 audio_summary_app/demo.py
 audio_summary_app/run.py
 audio_summary_app/run_demo.py
+# Note: test_*.py files in tests/ directory are allowed
 
 # Old/duplicate files (keep only src/ versions)
 audio_summary_app/audio_capture.py
