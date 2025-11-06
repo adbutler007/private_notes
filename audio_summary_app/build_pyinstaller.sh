@@ -23,6 +23,7 @@ uv run pyinstaller \
     --clean \
     --log-level=INFO \
     --runtime-hook=pyi_rth_qt6.py \
+    --add-data="qt.conf:." \
     --hidden-import=audio_summary_app \
     --hidden-import=audio_summary_app.gui \
     --hidden-import=audio_summary_app.gui.app \
