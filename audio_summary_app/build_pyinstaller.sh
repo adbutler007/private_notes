@@ -42,6 +42,7 @@ uv run pyinstaller \
     --exclude-module=tensorflow \
     --hidden-import=scipy \
     --hidden-import=scipy.signal \
+    --collect-all=scipy \
     launch_gui.py
 
 echo ""
