@@ -144,7 +144,7 @@ class RecordingWorker(QObject):
                     continue
 
                 # Transcribe
-                text = self.transcriber.add_audio(audio_chunk)
+                text = self.transcriber.transcribe(audio_chunk)
 
                 if text:
                     # Add to transcript buffer
