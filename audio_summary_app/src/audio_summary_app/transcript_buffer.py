@@ -67,10 +67,9 @@ class TranscriptBuffer:
             self.segments.append(segment)
             self.current_chunk.append(segment)
 
-            # Check if we should finalize the current chunk
-            elapsed = (timestamp - self.chunk_start_time).total_seconds()
-            if elapsed >= self.chunk_duration:
-                self._finalize_chunk()
+            # Note: We don't auto-finalize here anymore
+            # The recording controller will check should_summarize() and call get_chunk_for_summary()
+            # This ensures chunks are actually summarized, not just finalized in memory
                 
     def should_summarize(self) -> bool:
         """

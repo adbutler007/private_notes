@@ -4,6 +4,7 @@ macOS menu bar app for Audio Summary
 """
 
 import sys
+import os
 from pathlib import Path
 from PyQt6.QtWidgets import QApplication, QSystemTrayIcon, QMenu
 from PyQt6.QtGui import QIcon, QAction
