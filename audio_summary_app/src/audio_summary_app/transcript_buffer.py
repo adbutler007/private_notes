@@ -36,45 +36,102 @@ class TranscriptBuffer:
         self.current_chunk = []
         self.chunk_start_time = datetime.now()
         
+    def add(self, text: str, source: str = "mixed"):
+        """
+        Add a transcript segment to the buffer
+        Alias for add_segment to match usage in recording_controller
+
+        Args:
+            text: The transcribed text
+            source: Source of the audio (input/output/mixed)
+        """
+        self.add_segment(text, source)
+
     def add_segment(self, text: str, source: str = "mixed"):
         """
         Add a transcript segment to the buffer
-        
+
         Args:
             text: The transcribed text
             source: Source of the audio (input/output/mixed)
         """
         with self.lock:
             timestamp = datetime.now()
-            
+
             segment = {
                 'text': text,
                 'timestamp': timestamp,
                 'source': source
             }
-            
+
             self.segments.append(segment)
             self.current_chunk.append(segment)
-            
+
             # Check if we should finalize the current chunk
             elapsed = (timestamp - self.chunk_start_time).total_seconds()
             if elapsed >= self.chunk_duration:
                 self._finalize_chunk()
                 
+    def should_summarize(self) -> bool:
+        """
+        Check if enough time has elapsed to summarize the current chunk
+
+        Returns:
+            True if chunk_duration has elapsed since chunk_start_time
+        """
+        with self.lock:
+            if not self.current_chunk:
+                return False
+
+            elapsed = (datetime.now() - self.chunk_start_time).total_seconds()
+            return elapsed >= self.chunk_duration
+
+    def get_chunk_for_summary(self) -> str:
+        """
+        Get the current chunk text and finalize it for summarization
+        This should be called after should_summarize() returns True
+
+        Returns:
+            The full text of the current chunk
+        """
+        with self.lock:
+            if not self.current_chunk:
+                return ""
+
+            chunk_text = " ".join(seg['text'] for seg in self.current_chunk)
+            self._finalize_chunk()
+            return chunk_text
+
+    def force_finalize_chunk(self) -> str:
+        """
+        Force finalization of the current chunk regardless of time elapsed
+        This is used when recording stops to ensure the final chunk is summarized
+
+        Returns:
+            The full text of the current chunk, or empty string if no chunk exists
+        """
+        with self.lock:
+            if not self.current_chunk:
+                return ""
+
+            chunk_text = " ".join(seg['text'] for seg in self.current_chunk)
+            self._finalize_chunk()
+            return chunk_text
+
     def _finalize_chunk(self):
         """Finalize the current chunk for map-reduce processing"""
         if self.current_chunk:
             chunk_text = " ".join(seg['text'] for seg in self.current_chunk)
-            
+
             chunk = {
                 'text': chunk_text,
                 'start_time': self.current_chunk[0]['timestamp'],
                 'end_time': self.current_chunk[-1]['timestamp'],
                 'segment_count': len(self.current_chunk)
             }
-            
+
             self.chunks.append(chunk)
-            
+
             # Reset for next chunk (data not saved to disk, just reorganized in memory)
             self.current_chunk = []
             self.chunk_start_time = datetime.now()

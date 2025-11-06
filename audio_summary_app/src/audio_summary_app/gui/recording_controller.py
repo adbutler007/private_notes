@@ -90,12 +90,21 @@ class RecordingWorker(QObject):
             # Stop recording
             self.audio_manager.disable_recording()
             self.audio_manager.stop_capture()
-            self.status_update.emit("Generating final summary...")
+            self.status_update.emit("Processing final chunk...")
 
             # Wait for queues to finish processing
             time.sleep(2)  # Give threads time to finish processing
 
+            # Force finalize the current chunk and summarize it
+            # This ensures short meetings (< 5 min) and final chunks are summarized
+            final_chunk_text = self.transcript_buffer.force_finalize_chunk()
+            if final_chunk_text:
+                self.status_update.emit("Summarizing final chunk...")
+                chunk_summary = self.summarizer.summarize_chunk(final_chunk_text)
+                self.summarizer.add_intermediate_summary(chunk_summary)
+
             # Generate final summary
+            self.status_update.emit("Generating final summary...")
             final_summary = self.summarizer.generate_final_summary()
 
             # Extract structured data
