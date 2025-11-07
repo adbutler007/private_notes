@@ -17,8 +17,12 @@ class Config:
     max_buffer_size: int = 2000  # Maximum transcript segments to keep in memory
     chunk_duration: int = 300  # 5 minutes per chunk for map-reduce
     
-    # Transcription Settings (MLX Whisper - optimized for Apple Silicon)
-    stt_model_path: str = "turbo"  # Whisper model size
+    # Transcription Settings
+    stt_backend: str = "parakeet"  # Transcription backend: "whisper" or "parakeet"
+    # - "whisper": MLX Whisper (3-5x faster than PyTorch)
+    # - "parakeet": NVIDIA Parakeet TDT (~2x faster than MLX Whisper, better accuracy)
+
+    stt_model_path: str = "turbo"  # Whisper model size (only used if stt_backend="whisper")
     # Options: tiny, small, medium, large, large-v3, turbo
     #   - tiny: Fastest, lowest accuracy (~39M params)
     #   - small: Good balance (~244M params)
@@ -28,6 +32,14 @@ class Config:
     # Models auto-download on first use
     # Using large on M4 Mac with 32GB RAM for best accuracy
     # MLX provides 3-5x faster transcription on M-series chips
+
+    parakeet_model_path: str = "mlx-community/parakeet-tdt-0.6b-v3"  # Parakeet model (only used if stt_backend="parakeet")
+    # Options:
+    #   - mlx-community/parakeet-tdt-0.6b-v2 (600M params, industry-leading accuracy, 6.05% WER)
+    #   - mlx-community/parakeet-tdt-0.6b-v3 (600M params, latest version)
+    # Parakeet provides ~2x faster transcription than Whisper on Apple Silicon
+    # Built-in punctuation and capitalization support
+    # Recommended for M4 Mac with 32GB RAM
 
     # Audio buffering for transcription
     stt_min_audio_duration: float = 3.0  # Minimum seconds before transcribing
@@ -100,6 +112,12 @@ Extract the following information as JSON:"""
         
     def __str__(self):
         """String representation of config"""
+        stt_display = f"{self.stt_backend.upper()}"
+        if self.stt_backend == "whisper":
+            stt_display += f" {self.stt_model_path}"
+        elif self.stt_backend == "parakeet":
+            stt_display += f" {self.parakeet_model_path}"
+
         return f"""Audio Summary App Configuration:
 Audio:
   - Sample Rate: {self.sample_rate} Hz
@@ -110,7 +128,7 @@ Buffer:
   - Chunk Duration: {self.chunk_duration}s
 
 Models:
-  - STT Model: MLX Whisper {self.stt_model_path}
+  - STT Backend: {stt_display}
   - LLM Model: Ollama {self.llm_model_name}
 
 Summary:
@@ -137,18 +155,30 @@ Model Setup Instructions:
 2. Pull the Qwen3 model:
    ollama pull qwen3:4b-instruct
 
-3. Speech-to-Text (MLX Whisper):
-   - Models auto-download on first run
-   - Available: tiny, small, medium, large, large-v3, turbo
-   - Recommended for M4 Mac with 32GB RAM:
-     * large: Best accuracy (use for meetings/important content)
-     * turbo: Faster variant if you need speed over accuracy
-   - MLX provides 3-5x faster transcription on Apple Silicon
+3. Speech-to-Text - Choose one:
+
+   A. Parakeet MLX (RECOMMENDED - Fastest & Most Accurate):
+      - Models auto-download on first run
+      - Available models:
+        * mlx-community/parakeet-tdt-0.6b-v3 (latest, ~600M params)
+        * mlx-community/parakeet-tdt-0.6b-v2 (proven, industry-best 6.05% WER)
+      - ~2x faster than Whisper on Apple Silicon
+      - Built-in punctuation and capitalization
+      - Set stt_backend="parakeet" in config.py
+
+   B. MLX Whisper (Alternative):
+      - Models auto-download on first run
+      - Available: tiny, small, medium, large, large-v3, turbo
+      - Recommended for M4 Mac with 32GB RAM:
+        * large: Best accuracy (use for meetings/important content)
+        * turbo: Faster variant if you need speed over accuracy
+      - 3-5x faster transcription on Apple Silicon
+      - Set stt_backend="whisper" in config.py
 
 4. Install Dependencies:
    uv sync
-   # or: pip install mlx-whisper ollama sounddevice numpy
+   # or: pip install parakeet-mlx mlx-whisper ollama sounddevice numpy
 
 That's it! No manual model downloads needed.
-Both MLX Whisper and Ollama handle models automatically.
+All models (Parakeet, Whisper, and Ollama) auto-download on first use.
 """
