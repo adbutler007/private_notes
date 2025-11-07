@@ -210,8 +210,7 @@ class FirstRunWizard(QDialog):
         layout.addWidget(title)
 
         description = QLabel(
-            "To capture Zoom/Teams audio, you'll need BlackHole.\n\n"
-            "BlackHole creates a virtual audio device that routes audio to Audio Summary."
+            "To capture Zoom/Teams audio, you'll need BlackHole and a Multi-Output Device."
         )
         description.setWordWrap(True)
         layout.addWidget(description)
@@ -219,20 +218,44 @@ class FirstRunWizard(QDialog):
         instructions = QTextEdit()
         instructions.setReadOnly(True)
         instructions.setHtml(
-            "<h3>Installation:</h3>"
-            "<p><b>Option 1 (Homebrew):</b><br>"
-            "<code>brew install blackhole-2ch</code></p>"
-            "<p><b>Option 2 (Download):</b><br>"
+            "<h3>Step 1: Install BlackHole</h3>"
+            "<p><b>Option 1 (Homebrew):</b> <code>brew install --cask blackhole-2ch</code></p>"
+            "<p><b>Option 2 (Download):</b> "
             "Visit <a href='https://existential.audio/blackhole/'>existential.audio/blackhole</a></p>"
-            "<h3>Setup in Zoom/Teams:</h3>"
+            "<p style='margin-top: 10px;'><i>Note: After installing, restart your Mac or run: "
+            "<code>sudo pkill -9 coreaudiod</code></i></p>"
+
+            "<h3>Step 2: Create Multi-Output Device</h3>"
+            "<p>Click the button below to open Audio MIDI Setup, then:</p>"
             "<ol>"
-            "<li>Open Zoom/Teams settings</li>"
-            "<li>Go to Audio settings</li>"
-            "<li>Set Speaker to 'BlackHole 2ch'</li>"
-            "<li>In macOS System Settings > Sound, create Multi-Output Device (BlackHole + your speakers)</li>"
+            "<li>Click the <b>+</b> button (bottom-left)</li>"
+            "<li>Select <b>'Create Multi-Output Device'</b></li>"
+            "<li>Check the boxes for:"
+            "  <ul>"
+            "    <li>✅ <b>BlackHole 2ch</b> (for Private Notes recording)</li>"
+            "    <li>✅ <b>Your speakers/headphones</b> (so you can hear)</li>"
+            "  </ul>"
+            "</li>"
+            "<li>Close Audio MIDI Setup</li>"
             "</ol>"
+
+            "<h3>Step 3: Set as Default Output</h3>"
+            "<p>Open <b>System Settings > Sound</b> and set <b>Output</b> to "
+            "<b>Multi-Output Device</b></p>"
+
+            "<h3>Step 4: Configure Zoom/Teams</h3>"
+            "<p>In your meeting app's audio settings, set <b>Speaker</b> to "
+            "<b>Multi-Output Device</b></p>"
+
+            "<h3>Step 5: Configure Private Notes</h3>"
+            "<p>In Private Notes Settings, set <b>Input Device</b> to <b>BlackHole 2ch</b></p>"
         )
         layout.addWidget(instructions)
+
+        # Button to open Audio MIDI Setup
+        open_midi_button = QPushButton("Open Audio MIDI Setup")
+        open_midi_button.clicked.connect(self.open_audio_midi_setup)
+        layout.addWidget(open_midi_button)
 
         layout.addStretch()
         self.stack.addWidget(page)
@@ -374,3 +397,10 @@ class FirstRunWizard(QDialog):
     def skip_setup(self):
         """Skip the setup wizard"""
         self.accept()
+
+    def open_audio_midi_setup(self):
+        """Open Audio MIDI Setup application"""
+        try:
+            subprocess.run(['open', '-a', 'Audio MIDI Setup'], check=True)
+        except Exception as e:
+            print(f"Error opening Audio MIDI Setup: {e}")

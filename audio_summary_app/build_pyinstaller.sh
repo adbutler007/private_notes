@@ -24,6 +24,7 @@ uv run pyinstaller \
     --log-level=INFO \
     --runtime-hook=pyi_rth_qt6.py \
     --add-data="qt.conf:." \
+    --add-data="download_parakeet.py:." \
     --hidden-import=audio_summary_app \
     --hidden-import=audio_summary_app.gui \
     --hidden-import=audio_summary_app.gui.app \
