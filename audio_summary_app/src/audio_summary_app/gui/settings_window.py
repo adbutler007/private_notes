@@ -76,7 +76,18 @@ class SettingsWindow(QMainWindow):
         models_group = QGroupBox("Models")
         models_layout = QFormLayout()
 
-        # Whisper model selector
+        # STT Backend selector
+        self.stt_backend = QComboBox()
+        self.stt_backend.addItems(["parakeet", "whisper"])
+        # Set current backend
+        current_backend = self.config.stt_backend
+        index = self.stt_backend.findText(current_backend)
+        if index >= 0:
+            self.stt_backend.setCurrentIndex(index)
+        self.stt_backend.currentTextChanged.connect(self.on_stt_backend_changed)
+        models_layout.addRow("STT Backend:", self.stt_backend)
+
+        # Whisper model selector (only shown if whisper is selected)
         self.whisper_model = QComboBox()
         self.whisper_model.addItems(["tiny", "small", "medium", "large", "turbo"])
         # Set current model
@@ -84,7 +95,25 @@ class SettingsWindow(QMainWindow):
         index = self.whisper_model.findText(current_model)
         if index >= 0:
             self.whisper_model.setCurrentIndex(index)
+        self.whisper_model_row = models_layout.rowCount()
         models_layout.addRow("Whisper Model:", self.whisper_model)
+
+        # Parakeet model selector (only shown if parakeet is selected)
+        self.parakeet_model = QComboBox()
+        self.parakeet_model.addItems([
+            "mlx-community/parakeet-tdt-0.6b-v3",
+            "mlx-community/parakeet-tdt-0.6b-v2"
+        ])
+        # Set current model
+        current_parakeet = self.config.parakeet_model_path
+        index = self.parakeet_model.findText(current_parakeet)
+        if index >= 0:
+            self.parakeet_model.setCurrentIndex(index)
+        self.parakeet_model_row = models_layout.rowCount()
+        models_layout.addRow("Parakeet Model:", self.parakeet_model)
+
+        # Update visibility based on current backend
+        self.on_stt_backend_changed(self.config.stt_backend)
 
         # Download models button
         download_button = QPushButton("Download Models")
@@ -168,6 +197,12 @@ class SettingsWindow(QMainWindow):
                     self.input_device.addItem(f"{device['name']}", i)
         except Exception as e:
             self.input_device.addItem("Error loading devices", None)
+
+    def on_stt_backend_changed(self, backend: str):
+        """Handle STT backend change"""
+        # Show/hide model selectors based on backend
+        self.whisper_model.setVisible(backend == "whisper")
+        self.parakeet_model.setVisible(backend == "parakeet")
 
     def download_models(self):
         """Download models"""

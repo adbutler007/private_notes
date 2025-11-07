@@ -2,7 +2,7 @@
 from PyInstaller.utils.hooks import collect_all
 from PyInstaller.utils.hooks import copy_metadata
 
-datas = [('qt.conf', '.')]
+datas = [('qt.conf', '.'), ('download_parakeet.py', '.')]
 binaries = []
 hiddenimports = ['audio_summary_app', 'audio_summary_app.gui', 'audio_summary_app.gui.app', 'audio_summary_app.gui.meeting_browser', 'audio_summary_app.gui.settings_window', 'audio_summary_app.gui.first_run_wizard', 'audio_summary_app.gui.recording_controller', 'mlx', 'mlx_whisper', 'parakeet_mlx', 'scipy', 'scipy.signal']
 datas += copy_metadata('PyQt6')

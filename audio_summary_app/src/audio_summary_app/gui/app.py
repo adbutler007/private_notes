@@ -245,13 +245,17 @@ class AudioSummaryApp:
     def check_first_run(self):
         """Check if this is the first run and show setup wizard"""
         # Check if settings file exists (better indicator of first run than Ollama)
-        from PyQt6.QtCore import QSettings
+        from PyQt6.QtCore import QSettings, Qt
         settings = QSettings("com.privatenotes", "Private Notes")
 
         # If no settings exist, this is the first run
         if not settings.contains("first_run_completed"):
             # Show first run wizard
             wizard = FirstRunWizard(self.config)
+            # Make sure it's on top and visible
+            wizard.setWindowFlags(wizard.windowFlags() | Qt.WindowType.WindowStaysOnTopHint)
+            wizard.raise_()
+            wizard.activateWindow()
             if wizard.exec():
                 # Mark first run as completed
                 settings.setValue("first_run_completed", True)
