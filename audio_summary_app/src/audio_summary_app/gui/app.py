@@ -244,24 +244,18 @@ class AudioSummaryApp:
 
     def check_first_run(self):
         """Check if this is the first run and show setup wizard"""
-        # Check if Ollama model exists
-        import subprocess
-        try:
-            result = subprocess.run(
-                ['ollama', 'list'],
-                capture_output=True,
-                text=True,
-                timeout=5
-            )
-            model_name = self.config.llm_model_name
-            if model_name not in result.stdout:
-                # Show first run wizard
-                wizard = FirstRunWizard(self.config)
-                wizard.exec()
-        except (subprocess.TimeoutExpired, FileNotFoundError):
-            # Ollama not installed - show first run wizard
+        # Check if settings file exists (better indicator of first run than Ollama)
+        from PyQt6.QtCore import QSettings
+        settings = QSettings("com.privatenotes", "Private Notes")
+
+        # If no settings exist, this is the first run
+        if not settings.contains("first_run_completed"):
+            # Show first run wizard
             wizard = FirstRunWizard(self.config)
-            wizard.exec()
+            if wizard.exec():
+                # Mark first run as completed
+                settings.setValue("first_run_completed", True)
+                settings.sync()
 
     def quit_app(self):
         """Quit the application"""

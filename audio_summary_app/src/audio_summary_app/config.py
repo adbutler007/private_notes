@@ -83,7 +83,7 @@ Summaries:
 Extract the following information as JSON:"""
 
     # Output Settings
-    output_dir: str = "./summaries"  # Where to save summary files (ONLY FILES SAVED)
+    output_dir: str = str(Path.home() / "Documents" / "Meeting Summaries")  # Where to save summary files (ONLY FILES SAVED)
     # Produces two files per recording:
     #   - summary_YYYYMMDD_HHMMSS.txt: Human-readable summary
     #   - summary_YYYYMMDD_HHMMSS.json: Structured data (contacts, companies, deals)
