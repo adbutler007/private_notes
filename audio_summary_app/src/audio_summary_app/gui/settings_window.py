@@ -192,9 +192,17 @@ class SettingsWindow(QMainWindow):
         """Populate audio device dropdown"""
         try:
             devices = sd.query_devices()
+            macbook_mic_index = -1
             for i, device in enumerate(devices):
                 if device['max_input_channels'] > 0:  # Input device
                     self.input_device.addItem(f"{device['name']}", i)
+                    # Find MacBook Air Microphone
+                    if "MacBook Air Microphone" in device['name']:
+                        macbook_mic_index = self.input_device.count() - 1
+
+            # Default to MacBook Air Microphone if found
+            if macbook_mic_index >= 0:
+                self.input_device.setCurrentIndex(macbook_mic_index)
         except Exception as e:
             self.input_device.addItem("Error loading devices", None)
 
