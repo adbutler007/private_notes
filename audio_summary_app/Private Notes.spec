@@ -2,13 +2,17 @@
 from PyInstaller.utils.hooks import collect_all
 from PyInstaller.utils.hooks import copy_metadata
 
-datas = []
+datas = [('qt.conf', '.')]
 binaries = []
-hiddenimports = ['audio_summary_app', 'audio_summary_app.gui', 'audio_summary_app.gui.app', 'audio_summary_app.gui.meeting_browser', 'audio_summary_app.gui.settings_window', 'audio_summary_app.gui.first_run_wizard', 'audio_summary_app.gui.recording_controller', 'mlx', 'mlx_whisper', 'scipy', 'scipy.signal']
+hiddenimports = ['audio_summary_app', 'audio_summary_app.gui', 'audio_summary_app.gui.app', 'audio_summary_app.gui.meeting_browser', 'audio_summary_app.gui.settings_window', 'audio_summary_app.gui.first_run_wizard', 'audio_summary_app.gui.recording_controller', 'mlx', 'mlx_whisper', 'parakeet_mlx', 'scipy', 'scipy.signal']
 datas += copy_metadata('PyQt6')
 tmp_ret = collect_all('mlx_whisper')
 datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
+tmp_ret = collect_all('parakeet_mlx')
+datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
 tmp_ret = collect_all('mlx')
+datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
+tmp_ret = collect_all('scipy')
 datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
 
 

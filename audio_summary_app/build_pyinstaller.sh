@@ -33,7 +33,9 @@ uv run pyinstaller \
     --hidden-import=audio_summary_app.gui.recording_controller \
     --hidden-import=mlx \
     --hidden-import=mlx_whisper \
+    --hidden-import=parakeet_mlx \
     --collect-all=mlx_whisper \
+    --collect-all=parakeet_mlx \
     --collect-all=mlx \
     --copy-metadata=PyQt6 \
     --exclude-module=matplotlib \

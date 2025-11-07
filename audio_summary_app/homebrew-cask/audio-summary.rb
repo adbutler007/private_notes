@@ -60,7 +60,14 @@ cask "audio-summary" do
     Requires:
     - Ollama (installed automatically)
     - ~4GB disk space for LLM model
-    - ~16GB RAM recommended
+    - ~1GB disk space for Parakeet TDT transcription model (auto-downloads)
+    - ~16GB RAM recommended (32GB optimal for M4)
+
+    Transcription:
+    - Uses NVIDIA Parakeet TDT 0.6B (~2x faster than Whisper)
+    - Industry-leading 6.05% word error rate
+    - Built-in punctuation and capitalization
+    - Optimized for Apple Silicon (M-series chips)
 
     For Zoom/Teams audio capture, install BlackHole:
       brew install --cask blackhole-2ch
