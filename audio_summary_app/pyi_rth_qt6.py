@@ -10,6 +10,11 @@ from pathlib import Path
 if getattr(sys, 'frozen', False):
     bundle_dir = Path(sys._MEIPASS)
 
+    # Point Qt to the qt.conf file
+    qt_conf_path = bundle_dir / 'qt.conf'
+    if qt_conf_path.exists():
+        os.environ['QT_CONF'] = str(qt_conf_path)
+
     # Set Qt plugin path
     os.environ['QT_PLUGIN_PATH'] = str(bundle_dir / 'PyQt6' / 'Qt6' / 'plugins')
 

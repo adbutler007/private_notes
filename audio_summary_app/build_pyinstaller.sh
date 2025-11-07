@@ -79,11 +79,18 @@ if [ -d "dist/Private Notes.app" ]; then
     echo ""
     echo "App location: dist/Private Notes.app"
     echo ""
+
+    # Create distribution ZIP with proper symlink preservation
+    echo "Creating distribution package..."
+    cd dist
+    # Use ditto to create a proper macOS archive that preserves symlinks
+    ditto -c -k --sequesterRsrc --keepParent "Private Notes.app" "PrivateNotes-0.1.0.zip"
+    cd ..
+    echo "✓ Distribution package created: dist/PrivateNotes-0.1.0.zip"
+    echo ""
+
     echo "To test the app:"
     echo "  open 'dist/Private Notes.app'"
-    echo ""
-    echo "To create distribution package:"
-    echo "  cd dist && zip -r PrivateNotes-0.1.0.zip 'Private Notes.app'"
     echo ""
 else
     echo "✗ Build failed!"
