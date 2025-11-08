@@ -81,15 +81,6 @@ audio_summary_app/run.py
 audio_summary_app/run_demo.py
 # Note: test_*.py files in tests/ directory are allowed
 
-# Old/duplicate files (keep only src/ versions)
-audio_summary_app/audio_capture.py
-audio_summary_app/config.py
-audio_summary_app/main.py
-audio_summary_app/summarizer.py
-audio_summary_app/transcriber.py
-audio_summary_app/transcript_buffer.py
-audio_summary_app/requirements.txt
-
 # Logs
 *.log
 logs/
