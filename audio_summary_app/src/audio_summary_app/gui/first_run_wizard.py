@@ -26,24 +26,37 @@ class ModelDownloadWorker(QThread):
 
     def run(self):
         """Download the model"""
-        try:
-            self.progress.emit(f"Downloading {self.model_name}...")
-            result = subprocess.run(
-                ['ollama', 'pull', self.model_name],
-                capture_output=True,
-                text=True,
-                timeout=600  # 10 minutes max
-            )
+        # Try both /opt/homebrew/bin/ollama and just 'ollama' in PATH
+        ollama_paths = ['/opt/homebrew/bin/ollama', 'ollama']
 
-            if result.returncode == 0:
-                self.finished.emit(True, f"Successfully downloaded {self.model_name}")
-            else:
-                self.finished.emit(False, f"Failed to download: {result.stderr}")
+        for ollama_cmd in ollama_paths:
+            try:
+                self.progress.emit(f"Downloading {self.model_name}...")
+                result = subprocess.run(
+                    [ollama_cmd, 'pull', self.model_name],
+                    capture_output=True,
+                    text=True,
+                    timeout=600  # 10 minutes max
+                )
 
-        except subprocess.TimeoutExpired:
-            self.finished.emit(False, "Download timed out")
-        except Exception as e:
-            self.finished.emit(False, str(e))
+                if result.returncode == 0:
+                    self.finished.emit(True, f"Successfully downloaded {self.model_name}")
+                    return
+                elif result.returncode != 127:  # 127 means command not found
+                    self.finished.emit(False, f"Failed to download: {result.stderr}")
+                    return
+
+            except subprocess.TimeoutExpired:
+                self.finished.emit(False, "Download timed out")
+                return
+            except FileNotFoundError:
+                continue  # Try next path
+            except Exception as e:
+                self.finished.emit(False, str(e))
+                return
+
+        # If we get here, ollama command wasn't found
+        self.finished.emit(False, "Ollama command not found. Please install Ollama.")
 
 
 class FirstRunWizard(QDialog):
@@ -313,23 +326,28 @@ class FirstRunWizard(QDialog):
 
     def check_ollama(self):
         """Check if Ollama is installed"""
-        try:
-            result = subprocess.run(
-                ['ollama', '--version'],
-                capture_output=True,
-                text=True,
-                timeout=5
-            )
-            if result.returncode == 0:
-                self.ollama_status.setText("✓ Ollama is installed")
-                self.ollama_status.setStyleSheet("color: green; font-weight: bold;")
-                self.next_button.setEnabled(True)
-            else:
-                self.ollama_status.setText("✗ Ollama not found")
-                self.ollama_status.setStyleSheet("color: red; font-weight: bold;")
-        except (subprocess.TimeoutExpired, FileNotFoundError):
-            self.ollama_status.setText("✗ Ollama not found. Please install it to continue.")
-            self.ollama_status.setStyleSheet("color: red; font-weight: bold;")
+        # Try both /opt/homebrew/bin/ollama and just 'ollama' in PATH
+        ollama_paths = ['/opt/homebrew/bin/ollama', 'ollama']
+
+        for ollama_cmd in ollama_paths:
+            try:
+                result = subprocess.run(
+                    [ollama_cmd, '--version'],
+                    capture_output=True,
+                    text=True,
+                    timeout=5
+                )
+                if result.returncode == 0:
+                    self.ollama_status.setText("✓ Ollama is installed")
+                    self.ollama_status.setStyleSheet("color: green; font-weight: bold;")
+                    self.next_button.setEnabled(True)
+                    return
+            except (subprocess.TimeoutExpired, FileNotFoundError):
+                continue
+
+        # If we get here, Ollama wasn't found
+        self.ollama_status.setText("✗ Ollama not found. Please install it to continue.")
+        self.ollama_status.setStyleSheet("color: red; font-weight: bold;")
 
     def download_model(self):
         """Download selected model"""
