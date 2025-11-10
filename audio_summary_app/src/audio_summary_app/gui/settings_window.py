@@ -192,16 +192,31 @@ class SettingsWindow(QMainWindow):
         """Populate audio device dropdown"""
         try:
             devices = sd.query_devices()
+            blackhole_index = -1
             macbook_mic_index = -1
             for i, device in enumerate(devices):
                 if device['max_input_channels'] > 0:  # Input device
                     self.input_device.addItem(f"{device['name']}", i)
-                    # Find MacBook Air Microphone
-                    if "MacBook Air Microphone" in device['name']:
+                    # Find BlackHole (preferred for Zoom/Teams audio capture)
+                    if "BlackHole" in device['name']:
+                        blackhole_index = self.input_device.count() - 1
+                    # Find MacBook Air Microphone (fallback)
+                    elif "MacBook Air Microphone" in device['name']:
                         macbook_mic_index = self.input_device.count() - 1
 
-            # Default to MacBook Air Microphone if found
-            if macbook_mic_index >= 0:
+            # Load saved device from config
+            if hasattr(self.config, 'input_device') and self.config.input_device is not None:
+                # Find the saved device in the dropdown
+                for idx in range(self.input_device.count()):
+                    if self.input_device.itemData(idx) == self.config.input_device:
+                        self.input_device.setCurrentIndex(idx)
+                        return
+
+            # Default to BlackHole if found (best for meeting audio capture)
+            if blackhole_index >= 0:
+                self.input_device.setCurrentIndex(blackhole_index)
+            # Otherwise default to MacBook Air Microphone
+            elif macbook_mic_index >= 0:
                 self.input_device.setCurrentIndex(macbook_mic_index)
         except Exception as e:
             self.input_device.addItem("Error loading devices", None)
@@ -246,8 +261,39 @@ class SettingsWindow(QMainWindow):
 
     def save_settings(self):
         """Save settings"""
-        # TODO: Implement actual settings persistence
-        # For now, just show a message
+        from PyQt6.QtCore import QSettings
+
+        # Save to QSettings
+        settings = QSettings("com.privatenotes", "Private Notes")
+
+        # Save audio device
+        selected_device = self.input_device.currentData()
+        if selected_device is not None:
+            settings.setValue("input_device", selected_device)
+            self.config.input_device = selected_device
+
+        # Save STT backend
+        stt_backend = self.stt_backend.currentText()
+        settings.setValue("stt_backend", stt_backend)
+        self.config.stt_backend = stt_backend
+
+        # Save model selections
+        if stt_backend == "whisper":
+            whisper_model = self.whisper_model.currentText()
+            settings.setValue("stt_model_path", whisper_model)
+            self.config.stt_model_path = whisper_model
+        elif stt_backend == "parakeet":
+            parakeet_model = self.parakeet_model.currentText()
+            settings.setValue("parakeet_model_path", parakeet_model)
+            self.config.parakeet_model_path = parakeet_model
+
+        # Save LLM model
+        llm_model = self.llm_model.currentText()
+        settings.setValue("llm_model_name", llm_model)
+        self.config.llm_model_name = llm_model
+
+        settings.sync()
+
         msg = QMessageBox(self)
         msg.setWindowTitle("Settings Saved")
         msg.setText("Settings have been saved.\n\n"

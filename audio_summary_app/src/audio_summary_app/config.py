@@ -8,10 +8,11 @@ from pathlib import Path
 
 class Config:
     """Application configuration"""
-    
+
     # Audio Settings
     sample_rate: int = 16000  # 16kHz is standard for speech
     channels: int = 1  # Mono audio
+    input_device: int = None  # Audio input device index (None = default)
     
     # Buffer Settings
     max_buffer_size: int = 2000  # Maximum transcript segments to keep in memory

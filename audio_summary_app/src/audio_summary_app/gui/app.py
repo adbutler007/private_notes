@@ -30,6 +30,7 @@ class AudioSummaryApp:
 
         # Load config
         self.config = Config()
+        self.load_settings()
 
         # Initialize recording controller
         self.recording_controller = RecordingController(self.config)
@@ -101,6 +102,31 @@ class AudioSummaryApp:
         self.recording_controller.recording_started.connect(self.on_recording_started)
         self.recording_controller.recording_stopped.connect(self.on_recording_stopped)
         self.recording_controller.summary_ready.connect(self.on_summary_ready)
+
+    def load_settings(self):
+        """Load settings from QSettings"""
+        from PyQt6.QtCore import QSettings
+
+        settings = QSettings("com.privatenotes", "Private Notes")
+
+        # Load audio device
+        if settings.contains("input_device"):
+            self.config.input_device = settings.value("input_device", type=int)
+
+        # Load STT backend
+        if settings.contains("stt_backend"):
+            self.config.stt_backend = settings.value("stt_backend", type=str)
+
+        # Load model paths
+        if settings.contains("stt_model_path"):
+            self.config.stt_model_path = settings.value("stt_model_path", type=str)
+
+        if settings.contains("parakeet_model_path"):
+            self.config.parakeet_model_path = settings.value("parakeet_model_path", type=str)
+
+        # Load LLM model
+        if settings.contains("llm_model_name"):
+            self.config.llm_model_name = settings.value("llm_model_name", type=str)
 
     def toggle_recording(self):
         """Toggle recording on/off"""

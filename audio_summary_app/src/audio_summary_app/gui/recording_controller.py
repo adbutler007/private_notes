@@ -35,7 +35,8 @@ class RecordingWorker(QObject):
         # Initialize components (matching __main__.py architecture)
         self.audio_manager = AudioCaptureManager(
             sample_rate=config.sample_rate,
-            channels=config.channels
+            channels=config.channels,
+            input_device=config.input_device
         )
 
         self.transcript_buffer = TranscriptBuffer(

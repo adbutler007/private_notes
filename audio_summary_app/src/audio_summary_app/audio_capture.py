@@ -13,17 +13,18 @@ from typing import Optional
 
 class AudioCaptureManager:
     """Manages audio capture from both input and output devices"""
-    
-    def __init__(self, sample_rate: int = 16000, channels: int = 1):
+
+    def __init__(self, sample_rate: int = 16000, channels: int = 1, input_device: Optional[int] = None):
         self.sample_rate = sample_rate
         self.channels = channels
+        self.input_device = input_device  # None = default device
         self.is_capturing = False
         self.is_recording_enabled = False
-        
+
         self.input_stream: Optional[sd.InputStream] = None
         self.output_stream: Optional[sd.InputStream] = None
         self.audio_queue: Optional[queue.Queue] = None
-        
+
         # Buffer for combining input and output
         self.chunk_size = int(sample_rate * 0.5)  # 500ms chunks
         
@@ -35,9 +36,10 @@ class AudioCaptureManager:
         self.audio_queue = audio_queue
         self.is_capturing = True
         
-        # Start input stream (microphone)
+        # Start input stream (microphone or specified device)
         try:
             self.input_stream = sd.InputStream(
+                device=self.input_device,  # None = default, or specific device index
                 samplerate=self.sample_rate,
                 channels=self.channels,
                 callback=self._input_callback,
@@ -45,9 +47,10 @@ class AudioCaptureManager:
                 dtype=np.float32
             )
             self.input_stream.start()
-            print(f"Started microphone capture (device: {sd.query_devices(kind='input')['name']})")
+            device_name = sd.query_devices(self.input_device if self.input_device is not None else sd.default.device[0])['name']
+            print(f"Started audio capture (device: {device_name})")
         except Exception as e:
-            print(f"Warning: Could not start microphone capture: {e}")
+            print(f"Warning: Could not start audio capture: {e}")
             
         # Start output stream (system audio/loopback)
         # Note: This requires special setup on different OSes
