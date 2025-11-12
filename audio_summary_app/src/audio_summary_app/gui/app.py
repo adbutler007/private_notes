@@ -107,7 +107,7 @@ class AudioSummaryApp:
         """Load settings from QSettings"""
         from PyQt6.QtCore import QSettings
 
-        settings = QSettings("com.privatenotes", "Private Notes")
+        settings = QSettings("com.audiosummary", "Audio Summary")
 
         # Load audio device
         if settings.contains("input_device"):
@@ -272,7 +272,7 @@ class AudioSummaryApp:
         """Check if this is the first run and show setup wizard"""
         # Check if settings file exists (better indicator of first run than Ollama)
         from PyQt6.QtCore import QSettings, Qt
-        settings = QSettings("com.privatenotes", "Private Notes")
+        settings = QSettings("com.audiosummary", "Audio Summary")
 
         # If no settings exist, this is the first run
         if not settings.contains("first_run_completed"):

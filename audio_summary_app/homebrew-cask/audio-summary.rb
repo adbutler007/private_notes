@@ -1,11 +1,16 @@
 cask "audio-summary" do
   version "0.1.0"
-  sha256 "REPLACE_WITH_ACTUAL_SHA256"  # Get from: shasum -a 256 AudioSummary-#{version}.zip
+  sha256 "5b9336cb7ee981e3dcb6cebfbf565768fffcbb54709c2ee6519dcc484c132305"  # Update after building: shasum -a 256 AudioSummary-#{version}.zip
 
   url "https://github.com/adbutler007/private_notes/releases/download/v#{version}/AudioSummary-#{version}.zip"
   name "Audio Summary"
   desc "Privacy-first audio transcription and summarization for sales calls"
   homepage "https://github.com/adbutler007/private_notes"
+
+  livecheck do
+    url :url
+    strategy :github_latest
+  end
 
   # Requires macOS 11.0+ (Big Sur) for Apple Silicon support
   depends_on macos: ">= :big_sur"
@@ -14,8 +19,7 @@ cask "audio-summary" do
   # Required dependencies
   depends_on formula: "ollama"
 
-  # Optional but recommended
-  depends_on cask: "blackhole-2ch", optional: true
+  # Recommend BlackHole in caveats instead of a hard dependency
 
   app "Audio Summary.app"
 

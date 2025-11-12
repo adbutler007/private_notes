@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "Building Private Notes with PyInstaller..."
+echo "Building Audio Summary with PyInstaller..."
 echo "=========================================="
 echo ""
 
@@ -14,10 +14,10 @@ echo ""
 # Build the app
 echo "Building with PyInstaller..."
 uv run pyinstaller \
-    --name="Private Notes" \
+    --name="Audio Summary" \
     --windowed \
     --icon=assets/icon.icns \
-    --osx-bundle-identifier=com.privatenotes.app \
+    --osx-bundle-identifier=com.audiosummary.app \
     --target-arch=arm64 \
     --noconfirm \
     --clean \
@@ -54,46 +54,47 @@ echo ""
 # Customize Info.plist
 echo "Customizing Info.plist..."
 /usr/libexec/PlistBuddy -c "Add :LSUIElement bool true" \
-    "dist/Private Notes.app/Contents/Info.plist" 2>/dev/null || \
+    "dist/Audio Summary.app/Contents/Info.plist" 2>/dev/null || \
 /usr/libexec/PlistBuddy -c "Set :LSUIElement true" \
-    "dist/Private Notes.app/Contents/Info.plist"
+    "dist/Audio Summary.app/Contents/Info.plist"
 
 /usr/libexec/PlistBuddy -c "Add :LSMinimumSystemVersion string 11.0" \
-    "dist/Private Notes.app/Contents/Info.plist" 2>/dev/null || \
+    "dist/Audio Summary.app/Contents/Info.plist" 2>/dev/null || \
 /usr/libexec/PlistBuddy -c "Set :LSMinimumSystemVersion 11.0" \
-    "dist/Private Notes.app/Contents/Info.plist"
+    "dist/Audio Summary.app/Contents/Info.plist"
 
-/usr/libexec/PlistBuddy -c "Add :NSMicrophoneUsageDescription string 'Private Notes needs microphone access to record and transcribe meetings.'" \
-    "dist/Private Notes.app/Contents/Info.plist" 2>/dev/null || \
-/usr/libexec/PlistBuddy -c "Set :NSMicrophoneUsageDescription 'Private Notes needs microphone access to record and transcribe meetings.'" \
-    "dist/Private Notes.app/Contents/Info.plist"
+/usr/libexec/PlistBuddy -c "Add :NSMicrophoneUsageDescription string 'Audio Summary needs microphone access to record and transcribe meetings.'" \
+    "dist/Audio Summary.app/Contents/Info.plist" 2>/dev/null || \
+/usr/libexec/PlistBuddy -c "Set :NSMicrophoneUsageDescription 'Audio Summary needs microphone access to record and transcribe meetings.'" \
+    "dist/Audio Summary.app/Contents/Info.plist"
 
-/usr/libexec/PlistBuddy -c "Add :NSAppleEventsUsageDescription string 'Private Notes may interact with other apps.'" \
-    "dist/Private Notes.app/Contents/Info.plist" 2>/dev/null || \
-/usr/libexec/PlistBuddy -c "Set :NSAppleEventsUsageDescription 'Private Notes may interact with other apps.'" \
-    "dist/Private Notes.app/Contents/Info.plist"
+/usr/libexec/PlistBuddy -c "Add :NSAppleEventsUsageDescription string 'Audio Summary may interact with other apps.'" \
+    "dist/Audio Summary.app/Contents/Info.plist" 2>/dev/null || \
+/usr/libexec/PlistBuddy -c "Set :NSAppleEventsUsageDescription 'Audio Summary may interact with other apps.'" \
+    "dist/Audio Summary.app/Contents/Info.plist"
 
 echo "✓ Info.plist updated"
 echo ""
 
 # Check if build succeeded
-if [ -d "dist/Private Notes.app" ]; then
+if [ -d "dist/Audio Summary.app" ]; then
     echo "✓ Build successful!"
     echo ""
-    echo "App location: dist/Private Notes.app"
+    echo "App location: dist/Audio Summary.app"
     echo ""
 
     # Create distribution ZIP with proper symlink preservation
     echo "Creating distribution package..."
     cd dist
     # Use ditto to create a proper macOS archive that preserves symlinks
-    ditto -c -k --sequesterRsrc --keepParent "Private Notes.app" "PrivateNotes-0.1.0.zip"
+    VERSION=$(sed -n 's/^version = \"\(.*\)\"/\1/p' ../pyproject.toml | head -n1)
+    ditto -c -k --sequesterRsrc --keepParent "Audio Summary.app" "AudioSummary-${VERSION}.zip"
     cd ..
-    echo "✓ Distribution package created: dist/PrivateNotes-0.1.0.zip"
+    echo "✓ Distribution package created: dist/AudioSummary-${VERSION}.zip"
     echo ""
 
     echo "To test the app:"
-    echo "  open 'dist/Private Notes.app'"
+    echo "  open 'dist/Audio Summary.app'"
     echo ""
 else
     echo "✗ Build failed!"

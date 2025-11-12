@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Download Parakeet model for Private Notes
+Download Parakeet model for Audio Summary
 Called during Homebrew installation to pre-download the model
 """
 

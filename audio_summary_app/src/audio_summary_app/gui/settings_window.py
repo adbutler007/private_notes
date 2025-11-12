@@ -264,7 +264,7 @@ class SettingsWindow(QMainWindow):
         from PyQt6.QtCore import QSettings
 
         # Save to QSettings
-        settings = QSettings("com.privatenotes", "Private Notes")
+        settings = QSettings("com.audiosummary", "Audio Summary")
 
         # Save audio device
         selected_device = self.input_device.currentData()

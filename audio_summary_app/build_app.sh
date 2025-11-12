@@ -15,7 +15,7 @@ echo ""
 
 # Install py2app if needed
 echo "Checking py2app..."
-uv pip install py2app || echo "py2app already installed"
+uv pip install py2app >/dev/null 2>&1 || echo "py2app already installed"
 echo ""
 
 # Build the app
@@ -24,16 +24,21 @@ uv run python setup.py py2app
 echo ""
 
 # Check if build succeeded
-if [ -d "dist/Private Notes.app" ]; then
+if [ -d "dist/Audio Summary.app" ]; then
     echo "✓ Build successful!"
     echo ""
-    echo "App location: dist/Private Notes.app"
+    echo "App location: dist/Audio Summary.app"
     echo ""
     echo "To test the app:"
-    echo "  open 'dist/Private Notes.app'"
+    echo "  open 'dist/Audio Summary.app'"
     echo ""
-    echo "To create distribution package:"
-    echo "  cd dist && zip -r PrivateNotes-0.1.0.zip 'Private Notes.app'"
+    echo "Creating distribution zip..."
+    VERSION=$(sed -n 's/^version = \"\(.*\)\"/\1/p' pyproject.toml | head -n1)
+    (cd dist && zip -qr "AudioSummary-${VERSION}.zip" 'Audio Summary.app')
+    echo "✓ Created dist/AudioSummary-${VERSION}.zip"
+    echo ""
+    echo "SHA256 (use in Homebrew cask):"
+    shasum -a 256 "dist/AudioSummary-${VERSION}.zip" | awk '{print $1}'
     echo ""
 else
     echo "✗ Build failed!"

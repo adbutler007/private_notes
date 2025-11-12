@@ -245,7 +245,7 @@ class FirstRunWizard(QDialog):
             "<li>Select <b>'Create Multi-Output Device'</b></li>"
             "<li>Check the boxes for:"
             "  <ul>"
-            "    <li>✅ <b>BlackHole 2ch</b> (for Private Notes recording)</li>"
+            "    <li>✅ <b>BlackHole 2ch</b> (for Audio Summary recording)</li>"
             "    <li>✅ <b>Your speakers/headphones</b> (so you can hear)</li>"
             "  </ul>"
             "</li>"
@@ -260,8 +260,8 @@ class FirstRunWizard(QDialog):
             "<p>In your meeting app's audio settings, set <b>Speaker</b> to "
             "<b>Multi-Output Device</b></p>"
 
-            "<h3>Step 5: Configure Private Notes</h3>"
-            "<p>In Private Notes Settings, set <b>Input Device</b> to <b>BlackHole 2ch</b></p>"
+            "<h3>Step 5: Configure Audio Summary</h3>"
+            "<p>In Audio Summary Settings, set <b>Input Device</b> to <b>BlackHole 2ch</b></p>"
         )
         layout.addWidget(instructions)
 

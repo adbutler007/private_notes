@@ -9,18 +9,18 @@ APP = ['launch_gui.py']
 DATA_FILES = []
 OPTIONS = {
     'argv_emulation': False,
-    'alias': True,  # Use alias mode - simpler and more reliable with complex dependencies
+    'alias': False,  # Create a standalone, redistributable app bundle
     'iconfile': 'assets/icon.icns',
     'plist': {
-        'CFBundleName': 'Private Notes',
-        'CFBundleDisplayName': 'Private Notes',
-        'CFBundleIdentifier': 'com.privatenotes.app',
+        'CFBundleName': 'Audio Summary',
+        'CFBundleDisplayName': 'Audio Summary',
+        'CFBundleIdentifier': 'com.audiosummary.app',
         'CFBundleVersion': '0.1.0',
         'CFBundleShortVersionString': '0.1.0',
         'LSMinimumSystemVersion': '11.0',  # macOS Big Sur
         'LSUIElement': True,  # This makes it a menu bar app (no dock icon)
-        'NSMicrophoneUsageDescription': 'Private Notes needs microphone access to record and transcribe meetings.',
-        'NSAppleEventsUsageDescription': 'Private Notes may interact with other apps.',
+        'NSMicrophoneUsageDescription': 'Audio Summary needs microphone access to record and transcribe meetings.',
+        'NSAppleEventsUsageDescription': 'Audio Summary may interact with other apps.',
     },
     'packages': [
         'audio_summary_app',
@@ -53,7 +53,7 @@ OPTIONS = {
 }
 
 setup(
-    name='PrivateNotes',
+    name='AudioSummary',
     app=APP,
     data_files=DATA_FILES,
     options={'py2app': OPTIONS},

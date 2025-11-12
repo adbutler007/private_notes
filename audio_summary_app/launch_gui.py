@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Launcher script for Private Notes GUI
-This is the entry point for the py2app bundle
+Launcher script for Audio Summary GUI
+This is the entry point for the packaged app
 """
 
 import sys
