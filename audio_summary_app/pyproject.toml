@@ -1,6 +1,6 @@
 [project]
 name = "audio-summary-app"
-version = "0.1.3"
+version = "0.1.4"
 description = "A privacy-focused desktop application that captures audio, transcribes it in real-time, and generates intelligent summaries using on-device AI models"
 readme = "README.md"
 requires-python = ">=3.10"

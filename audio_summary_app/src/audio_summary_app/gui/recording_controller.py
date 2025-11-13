@@ -15,6 +15,7 @@ import time
 
 from ..config import Config
 from ..microphone_permission import ensure_mic_permission
+import sounddevice as sd
 from ..audio_capture import AudioCaptureManager
 from ..transcriber import StreamingTranscriber, ParakeetTranscriber
 from ..transcript_buffer import TranscriptBuffer
@@ -315,7 +316,30 @@ class RecordingController(QObject):
 
         # Gate on microphone permission; guide the user if not granted
         try:
-            if not ensure_mic_permission():
+            granted = ensure_mic_permission()
+        except Exception:
+            granted = False
+
+        if not granted:
+            # Force the system prompt by briefly opening a real input stream
+            try:
+                mic_index = None
+                for i, d in enumerate(sd.query_devices()):
+                    if d.get('max_input_channels', 0) > 0 and 'microphone' in d.get('name','').lower():
+                        mic_index = i
+                        break
+                with sd.InputStream(device=mic_index, samplerate=self.config.sample_rate, channels=1):
+                    sd.sleep(500)  # 0.5s to trigger prompt
+            except Exception:
+                pass
+
+            # Check again after attempting to trigger the prompt
+            try:
+                granted = ensure_mic_permission(0.5)
+            except Exception:
+                granted = False
+
+            if not granted:
                 self.status_update.emit(
                     "Microphone access not granted. Enable it in System Settings > Privacy & Security > Microphone."
                 )
@@ -328,8 +352,6 @@ class RecordingController(QObject):
                 except Exception:
                     pass
                 return
-        except Exception:
-            pass
 
         self.is_recording = True
 
