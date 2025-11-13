@@ -15,6 +15,7 @@ from .meeting_browser import MeetingBrowser
 from .settings_window import SettingsWindow
 from .first_run_wizard import FirstRunWizard
 from .recording_controller import RecordingController
+from ..microphone_permission import ensure_mic_permission
 
 
 class AudioSummaryApp:
@@ -46,6 +47,20 @@ class AudioSummaryApp:
         # Check if first run
         self.check_first_run()
 
+        # Ensure microphone permission (will trigger system prompt on first launch)
+        try:
+            granted = ensure_mic_permission()
+            if not granted:
+                # Show a gentle reminder; user may still accept from the system prompt later
+                self.tray_icon.showMessage(
+                    "Microphone Access",
+                    "Please allow microphone access for Audio Summary in the system prompt or in System Settings > Privacy & Security > Microphone.",
+                    QSystemTrayIcon.MessageIcon.Information,
+                    5000,
+                )
+        except Exception:
+            pass
+
     def setup_tray_icon(self):
         """Set up the system tray icon and menu"""
         # TODO: Use custom icon when available
@@ -63,6 +78,17 @@ class AudioSummaryApp:
         menu.addAction(self.recording_action)
 
         menu.addSeparator()
+
+        # Troubleshooting
+        help_action = QAction("Troubleshoot Microphone…", menu)
+        def _open_mic_settings():
+            try:
+                import subprocess
+                subprocess.run(['open', 'x-apple.systempreferences:com.apple.preference.security?Privacy_Microphone'], check=False)
+            except Exception:
+                pass
+        help_action.triggered.connect(_open_mic_settings)
+        menu.addAction(help_action)
 
         # Meeting Browser
         browser_action = QAction("Meeting Browser...", menu)

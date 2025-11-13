@@ -14,6 +14,7 @@ import threading
 import time
 
 from ..config import Config
+from ..microphone_permission import ensure_mic_permission
 from ..audio_capture import AudioCaptureManager
 from ..transcriber import StreamingTranscriber, ParakeetTranscriber
 from ..transcript_buffer import TranscriptBuffer
@@ -311,6 +312,24 @@ class RecordingController(QObject):
         """Start a recording session"""
         if self.is_recording:
             return
+
+        # Gate on microphone permission; guide the user if not granted
+        try:
+            if not ensure_mic_permission():
+                self.status_update.emit(
+                    "Microphone access not granted. Enable it in System Settings > Privacy & Security > Microphone."
+                )
+                try:
+                    import subprocess
+                    subprocess.run([
+                        'open',
+                        'x-apple.systempreferences:com.apple.preference.security?Privacy_Microphone'
+                    ], check=False)
+                except Exception:
+                    pass
+                return
+        except Exception:
+            pass
 
         self.is_recording = True
 

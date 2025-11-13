@@ -15,6 +15,7 @@ Notes:
 
 **First Launch**
 - Audio Summary runs as a menu bar app (no Dock icon).
+- On first launch you should see a macOS Microphone prompt. Click OK.
 - Look for the tray icon and follow the First‑Run Wizard.
 
 **Model Setup (Once)**
@@ -38,6 +39,13 @@ Notes:
   - `rm -rf "$HOME/Library/Saved Application State/com.audiosummary.app.savedState"`
   - `rm -rf "$HOME/Documents/Meeting Summaries"`
 - Fresh install: `brew install --cask audio-summary`
+
+**Troubleshooting Microphone**
+- If you don’t see the macOS Microphone prompt and the app isn’t listed in System Settings → Privacy & Security → Microphone:
+  1) Quit the app.
+  2) Reset any stale mic record: `tccutil reset Microphone com.audiosummary.app` then `killall coreaudiod`.
+  3) Launch the executable once to trigger the prompt: `/Applications/Audio\ Summary.app/Contents/MacOS/Audio\ Summary`.
+  4) From the tray menu, use “Troubleshoot Microphone…” to open the correct System Settings page.
 
 **Advanced: Notarized Builds (Optional)**
 - Not required for this private tap, but recommended for broad distribution or managed Macs.

@@ -38,19 +38,42 @@ class AudioCaptureManager:
         
         # Start input stream (microphone or specified device)
         try:
-            # Clamp channels to device capabilities to avoid silent streams
+            # Resolve input device dynamically to handle index changes
+            device_index = self.input_device
             dev = None
-            try:
-                if self.input_device is not None:
-                    dev = sd.query_devices(self.input_device)
-            except Exception:
-                dev = None
+            if device_index is not None:
+                try:
+                    dev = sd.query_devices(device_index)
+                except Exception:
+                    dev = None
+
+            # If saved index is invalid or has no input channels, try to find BlackHole
+            if dev is None or dev.get('max_input_channels', 0) == 0:
+                bh = self._find_named_input_device(["blackhole", "vb-cable", "loopback", "stereo mix"])  # prefer virtual loopback
+                if bh is not None:
+                    device_index = bh
+                    dev = sd.query_devices(device_index)
+            else:
+                # If the saved device exists but isn't the virtual loopback we expect,
+                # prefer BlackHole when available to capture system audio reliably.
+                name = str(dev.get('name', '')).lower()
+                if "blackhole" not in name:
+                    bh = self._find_named_input_device(["blackhole"])  # strict BlackHole preference
+                    if bh is not None:
+                        device_index = bh
+                        dev = sd.query_devices(device_index)
+
+            # Final fallback to system default input
+            if dev is None:
+                device_index = None
+
+            # Clamp channels to device capabilities
             channels = self.channels
             if dev and dev.get('max_input_channels'):
                 channels = min(max(1, channels), int(dev['max_input_channels']))
 
             self.input_stream = sd.InputStream(
-                device=self.input_device,  # None = default, or specific device index
+                device=device_index,  # None = default, or specific device index
                 samplerate=self.sample_rate,
                 channels=channels,
                 callback=self._input_callback,
@@ -58,7 +81,8 @@ class AudioCaptureManager:
                 dtype=np.float32
             )
             self.input_stream.start()
-            device_name = sd.query_devices(self.input_device if self.input_device is not None else sd.default.device[0])['name']
+            chosen_index = device_index if device_index is not None else sd.default.device[0]
+            device_name = sd.query_devices(chosen_index)['name']
             print(f"Started audio capture (device: {device_name})")
         except Exception as e:
             print(f"Warning: Could not start audio capture: {e}")
@@ -171,6 +195,16 @@ class AudioCaptureManager:
                     if keyword in device_name:
                         return idx
                         
+        return None
+
+    def _find_named_input_device(self, keywords: list[str]) -> Optional[int]:
+        """Find an input device whose name contains any of the keywords"""
+        devices = sd.query_devices()
+        for idx, device in enumerate(devices):
+            if device['max_input_channels'] > 0:
+                name = device['name'].lower()
+                if any(k in name for k in keywords):
+                    return idx
         return None
         
     def list_devices(self):
