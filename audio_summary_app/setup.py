@@ -15,8 +15,8 @@ OPTIONS = {
         'CFBundleName': 'Audio Summary',
         'CFBundleDisplayName': 'Audio Summary',
         'CFBundleIdentifier': 'com.audiosummary.app',
-        'CFBundleVersion': '0.1.0',
-        'CFBundleShortVersionString': '0.1.0',
+        'CFBundleVersion': '0.1.1',
+        'CFBundleShortVersionString': '0.1.1',
         'LSMinimumSystemVersion': '11.0',  # macOS Big Sur
         'LSUIElement': True,  # This makes it a menu bar app (no dock icon)
         'NSMicrophoneUsageDescription': 'Audio Summary needs microphone access to record and transcribe meetings.',

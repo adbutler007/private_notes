@@ -89,6 +89,20 @@ if [ -d "dist/Audio Summary.app" ]; then
     # Use ditto to create a proper macOS archive that preserves symlinks
     VERSION=$(sed -n 's/^version = \"\(.*\)\"/\1/p' ../pyproject.toml | head -n1)
     ditto -c -k --sequesterRsrc --keepParent "Audio Summary.app" "AudioSummary-${VERSION}.zip"
+    
+    # Optional: sign, notarize, and staple if creds are available
+    if [ -n "${DEVELOPER_ID:-}" ] && [ -n "${NOTARY_PROFILE:-}" ]; then
+      echo "Signing and notarizing with Apple..."
+      chmod +x ../macos/sign_and_notarize.sh
+      ../macos/sign_and_notarize.sh || {
+        echo "Notarization step failed; distribution will not be notarized.";
+      }
+      echo "Rebuild ZIP after stapling (if succeeded) ..."
+      rm -f "AudioSummary-${VERSION}.zip"
+      ditto -c -k --sequesterRsrc --keepParent "Audio Summary.app" "AudioSummary-${VERSION}.zip"
+    else
+      echo "Skipping notarization (set DEVELOPER_ID and NOTARY_PROFILE to enable)"
+    fi
     cd ..
     echo "✓ Distribution package created: dist/AudioSummary-${VERSION}.zip"
     echo ""

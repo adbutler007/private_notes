@@ -10,13 +10,13 @@ class Config:
     """Application configuration"""
 
     # Audio Settings
-    sample_rate: int = 16000  # 16kHz is standard for speech
+    sample_rate: int = 48000  # Match macOS/BlackHole default to avoid device mismatch
     channels: int = 1  # Mono audio
     input_device: int = None  # Audio input device index (None = default)
     
     # Buffer Settings
     max_buffer_size: int = 2000  # Maximum transcript segments to keep in memory
-    chunk_duration: int = 300  # 5 minutes per chunk for map-reduce
+    chunk_duration: int = 60  # 1 minute chunks so short calls produce summaries
     
     # Transcription Settings
     stt_backend: str = "parakeet"  # Transcription backend: "whisper" or "parakeet"
@@ -51,7 +51,7 @@ class Config:
     # Summarization Settings (Ollama)
     llm_model_name: str = "qwen3:4b-instruct"  # Ollama model name
     # Other options: llama3.2:3b, phi3:3.8b, gemma2:2b, qwen3:1.7b
-    summary_interval: int = 300  # Generate rolling summary every 5 minutes
+    summary_interval: int = 60  # Rolling summary every 1 minute (better for 2–3 min calls)
 
     # Token Limits
     chunk_summary_max_tokens: int = 300  # Max tokens for individual chunk summaries (concise)

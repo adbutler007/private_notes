@@ -58,13 +58,15 @@ class RecordingWorker(QObject):
             self.transcriber = ParakeetTranscriber(
                 model_path=config.parakeet_model_path,
                 min_audio_duration=config.stt_min_audio_duration,
-                max_audio_duration=config.stt_max_audio_duration
+                max_audio_duration=config.stt_max_audio_duration,
+                sample_rate=config.sample_rate
             )
         else:  # whisper
             self.transcriber = StreamingTranscriber(
                 model_path=config.stt_model_path,
                 min_audio_duration=config.stt_min_audio_duration,
-                max_audio_duration=config.stt_max_audio_duration
+                max_audio_duration=config.stt_max_audio_duration,
+                sample_rate=config.sample_rate
             )
 
         # Queues for threading

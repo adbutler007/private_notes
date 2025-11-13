@@ -38,10 +38,21 @@ class AudioCaptureManager:
         
         # Start input stream (microphone or specified device)
         try:
+            # Clamp channels to device capabilities to avoid silent streams
+            dev = None
+            try:
+                if self.input_device is not None:
+                    dev = sd.query_devices(self.input_device)
+            except Exception:
+                dev = None
+            channels = self.channels
+            if dev and dev.get('max_input_channels'):
+                channels = min(max(1, channels), int(dev['max_input_channels']))
+
             self.input_stream = sd.InputStream(
                 device=self.input_device,  # None = default, or specific device index
                 samplerate=self.sample_rate,
-                channels=self.channels,
+                channels=channels,
                 callback=self._input_callback,
                 blocksize=self.chunk_size,
                 dtype=np.float32

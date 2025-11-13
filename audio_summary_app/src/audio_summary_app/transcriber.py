@@ -17,7 +17,7 @@ class StreamingTranscriber:
     Supports both input (mic) and output (system audio) transcription
     """
     
-    def __init__(self, model_path: str = "base.en", min_audio_duration: float = 3.0, max_audio_duration: float = 10.0):
+    def __init__(self, model_path: str = "base.en", min_audio_duration: float = 2.0, max_audio_duration: float = 10.0, sample_rate: int = 16000):
         """
         Args:
             model_path: Whisper model size (tiny, base, small, medium, large, large-v2, large-v3)
@@ -59,6 +59,7 @@ class StreamingTranscriber:
         # Whisper performs better with longer audio segments (2-5 seconds)
         self.min_audio_duration = min_audio_duration
         self.max_audio_duration = max_audio_duration
+        self.sample_rate = sample_rate
 
         # Test that MLX Whisper is available
         self.use_mock = not self._test_mlx_available()
@@ -101,9 +102,8 @@ class StreamingTranscriber:
             # Add to buffer
             self.audio_buffer.append(audio_data)
 
-            # Calculate duration (assuming 16kHz sample rate)
-            sample_rate = 16000
-            chunk_duration = len(audio_data) / sample_rate
+            # Calculate duration based on configured sample rate
+            chunk_duration = len(audio_data) / float(self.sample_rate)
             self.buffer_duration += chunk_duration
 
             # Only transcribe if we have enough audio (but not too much)
@@ -284,7 +284,7 @@ class ParakeetTranscriber:
     Supports both input (mic) and output (system audio) transcription
     """
 
-    def __init__(self, model_path: str = "mlx-community/parakeet-tdt-0.6b-v3", min_audio_duration: float = 3.0, max_audio_duration: float = 10.0):
+    def __init__(self, model_path: str = "mlx-community/parakeet-tdt-0.6b-v3", min_audio_duration: float = 2.0, max_audio_duration: float = 10.0, sample_rate: int = 16000):
         """
         Args:
             model_path: Parakeet model repo (default: mlx-community/parakeet-tdt-0.6b-v3)
@@ -304,6 +304,7 @@ class ParakeetTranscriber:
         self.buffer_duration = 0.0
         self.min_audio_duration = min_audio_duration
         self.max_audio_duration = max_audio_duration
+        self.sample_rate = sample_rate
 
         # Test that Parakeet MLX is available
         self.use_mock = not self._test_parakeet_available()
@@ -366,9 +367,8 @@ class ParakeetTranscriber:
             # Add to buffer
             self.audio_buffer.append(audio_data)
 
-            # Calculate duration (assuming 16kHz sample rate)
-            sample_rate = 16000
-            chunk_duration = len(audio_data) / sample_rate
+            # Calculate duration based on configured sample rate
+            chunk_duration = len(audio_data) / float(self.sample_rate)
             self.buffer_duration += chunk_duration
 
             # Only transcribe if we have enough audio

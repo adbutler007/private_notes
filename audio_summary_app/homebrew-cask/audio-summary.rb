@@ -1,6 +1,6 @@
 cask "audio-summary" do
-  version "0.1.0"
-  sha256 "5b9336cb7ee981e3dcb6cebfbf565768fffcbb54709c2ee6519dcc484c132305"  # Update after building: shasum -a 256 AudioSummary-#{version}.zip
+  version "0.1.1"
+  sha256 "a658ade41643a46ff32fafe431b385620c22070bfc5ea4ecd597e0870984408a"  # Update after building: shasum -a 256 AudioSummary-#{version}.zip
 
   url "https://github.com/adbutler007/private_notes/releases/download/v#{version}/AudioSummary-#{version}.zip"
   name "Audio Summary"
@@ -24,6 +24,16 @@ cask "audio-summary" do
   app "Audio Summary.app"
 
   postflight do
+    # Optionally remove quarantine to allow launching without notarization.
+    # This is acceptable in a private tap but will be rejected in Homebrew core.
+    # If you prefer to keep quarantine, install with: brew install --cask audio-summary --no-quarantine
+    begin
+      system_command "/usr/bin/xattr",
+                     args: ["-dr", "com.apple.quarantine", "#{appdir}/Audio Summary.app"],
+                     must_succeed: false
+    rescue StandardError
+    end
+
     # Show first-run instructions
     puts <<~EOS
       ====================================
@@ -44,6 +54,16 @@ cask "audio-summary" do
 
       Documentation: https://github.com/adbutler007/private_notes/tree/main/audio_summary_app
     EOS
+  end
+
+  # Also strip quarantine from the staged app before it is moved, to be extra sure
+  preflight do
+    begin
+      system_command "/usr/bin/xattr",
+                     args: ["-dr", "com.apple.quarantine", "#{staged_path}/Audio Summary.app"],
+                     must_succeed: false
+    rescue StandardError
+    end
   end
 
   zap trash: [
@@ -75,5 +95,11 @@ cask "audio-summary" do
 
     For Zoom/Teams audio capture, install BlackHole:
       brew install --cask blackhole-2ch
+
+    If macOS Gatekeeper blocks launch and you intentionally skip notarization,
+    you can install with Homebrew's no-quarantine flag instead:
+      brew reinstall --cask --no-quarantine audio-summary
+    Or remove quarantine manually:
+      xattr -dr com.apple.quarantine "/Applications/Audio Summary.app"
   EOS
 end
