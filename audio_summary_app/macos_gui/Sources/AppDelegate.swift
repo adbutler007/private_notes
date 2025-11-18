@@ -89,10 +89,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         print("[Engine] Found uv at: \(uvPath)")
         
-        // Find the project directory (assume it's in ~/Projects/private_notes)
-        let projectPath = FileManager.default.homeDirectoryForCurrentUser.path + "/Projects/private_notes"
+        // Find the project directory (assume it's in ~/Projects/private_notes/audio_summary_app)
+        let projectPath = FileManager.default.homeDirectoryForCurrentUser.path + "/Projects/private_notes/audio_summary_app"
         
-        guard FileManager.default.fileExists(atPath: projectPath + "/audio_summary_app") else {
+        guard FileManager.default.fileExists(atPath: projectPath + "/pyproject.toml") else {
             print("[Engine] Project not found at \(projectPath)")
             print("[Engine] Engine will not start automatically.")
             return
