@@ -5,7 +5,7 @@
 
 set -e  # Exit on error
 
-VERSION="${1:-0.2.0}"  # Default to 0.2.0 if not specified
+VERSION="${1:-0.2.1}"  # Default to 0.2.1 if not specified
 APP_NAME="Audio Summary"
 BUNDLE_ID="com.audiosummary.gui"
 BUILD_DIR=".build"
