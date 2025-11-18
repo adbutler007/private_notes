@@ -55,16 +55,6 @@ xcrun notarytool submit "$ZIP_FILE" \
     --keychain-profile "$NOTARY_PROFILE" \
     --wait
 
-# Check notarization status
-SUBMISSION_ID=$(xcrun notarytool history \
-    --keychain-profile "$NOTARY_PROFILE" \
-    | head -2 | tail -1 | awk '{print $4}')
-
-echo ""
-echo "4. Checking notarization status..."
-xcrun notarytool info "$SUBMISSION_ID" \
-    --keychain-profile "$NOTARY_PROFILE"
-
 # 5. Staple notarization ticket
 echo ""
 echo "5. Stapling notarization ticket..."
