@@ -1,0 +1,72 @@
+{
+  "": {
+    "dependencies": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/AudioSummaryGUI.d",
+    "object": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/AudioSummaryGUI.o",
+    "swift-dependencies": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/master.swiftdeps"
+  },
+  "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/Sources/AppDelegate.swift": {
+    "object": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/AppDelegate.swift.o",
+    "swiftmodule": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/AppDelegate~partial.swiftmodule",
+    "swift-dependencies": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/AppDelegate.swiftdeps"
+  },
+  "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/Sources/CaptureController.swift": {
+    "object": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/CaptureController.swift.o",
+    "swiftmodule": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/CaptureController~partial.swiftmodule",
+    "swift-dependencies": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/CaptureController.swiftdeps"
+  },
+  "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/Sources/Managers/PreferencesManager.swift": {
+    "object": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/PreferencesManager.swift.o",
+    "swiftmodule": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/PreferencesManager~partial.swiftmodule",
+    "swift-dependencies": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/PreferencesManager.swiftdeps"
+  },
+  "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/Sources/Managers/SessionManager.swift": {
+    "object": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/SessionManager.swift.o",
+    "swiftmodule": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/SessionManager~partial.swiftmodule",
+    "swift-dependencies": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/SessionManager.swiftdeps"
+  },
+  "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/Sources/Shared/AudioProcessor.swift": {
+    "object": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/AudioProcessor.swift.o",
+    "swiftmodule": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/AudioProcessor~partial.swiftmodule",
+    "swift-dependencies": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/AudioProcessor.swiftdeps"
+  },
+  "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/Sources/Shared/EngineClient.swift": {
+    "object": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/EngineClient.swift.o",
+    "swiftmodule": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/EngineClient~partial.swiftmodule",
+    "swift-dependencies": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/EngineClient.swiftdeps"
+  },
+  "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/Sources/Shared/Logger.swift": {
+    "object": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/Logger.swift.o",
+    "swiftmodule": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/Logger~partial.swiftmodule",
+    "swift-dependencies": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/Logger.swiftdeps"
+  },
+  "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/Sources/Shared/MicrophoneCaptureManager.swift": {
+    "object": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/MicrophoneCaptureManager.swift.o",
+    "swiftmodule": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/MicrophoneCaptureManager~partial.swiftmodule",
+    "swift-dependencies": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/MicrophoneCaptureManager.swiftdeps"
+  },
+  "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/Sources/Shared/Models.swift": {
+    "object": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/Models.swift.o",
+    "swiftmodule": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/Models~partial.swiftmodule",
+    "swift-dependencies": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/Models.swiftdeps"
+  },
+  "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/Sources/Shared/ScreenCaptureManager.swift": {
+    "object": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/ScreenCaptureManager.swift.o",
+    "swiftmodule": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/ScreenCaptureManager~partial.swiftmodule",
+    "swift-dependencies": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/ScreenCaptureManager.swiftdeps"
+  },
+  "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/Sources/Views/FirstRunWizard.swift": {
+    "object": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/FirstRunWizard.swift.o",
+    "swiftmodule": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/FirstRunWizard~partial.swiftmodule",
+    "swift-dependencies": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/FirstRunWizard.swiftdeps"
+  },
+  "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/Sources/Views/SettingsView.swift": {
+    "object": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/SettingsView.swift.o",
+    "swiftmodule": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/SettingsView~partial.swiftmodule",
+    "swift-dependencies": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/SettingsView.swiftdeps"
+  },
+  "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/Sources/main.swift": {
+    "object": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/main.swift.o",
+    "swiftmodule": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/main~partial.swiftmodule",
+    "swift-dependencies": "/Users/adambutler/Projects/private_notes/audio_summary_app/macos_gui/.build/arm64-apple-macosx/release/AudioSummaryGUI.build/main.swiftdeps"
+  }
+}
