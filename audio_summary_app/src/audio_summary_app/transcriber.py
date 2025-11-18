@@ -17,13 +17,14 @@ class StreamingTranscriber:
     Supports both input (mic) and output (system audio) transcription
     """
     
-    def __init__(self, model_path: str = "base.en", min_audio_duration: float = 2.0, max_audio_duration: float = 10.0, sample_rate: int = 16000):
+    def __init__(self, model_path: str = "base.en", min_audio_duration: float = 2.0, max_audio_duration: float = 10.0, capture_sample_rate: int = 16000):
         """
         Args:
             model_path: Whisper model size (tiny, base, small, medium, large, large-v2, large-v3)
                        MLX Whisper will automatically optimize for Apple Silicon
             min_audio_duration: Minimum seconds of audio to accumulate before transcribing
             max_audio_duration: Maximum seconds to accumulate (prevents excessive latency)
+            capture_sample_rate: Sample rate of incoming audio (will be resampled if needed)
         """
         # Convert standard model names to MLX community format
         # Available models: tiny, small-mlx, medium-mlx, large-v3-mlx, large-v3-turbo
@@ -59,7 +60,7 @@ class StreamingTranscriber:
         # Whisper performs better with longer audio segments (2-5 seconds)
         self.min_audio_duration = min_audio_duration
         self.max_audio_duration = max_audio_duration
-        self.sample_rate = sample_rate
+        self.sample_rate = capture_sample_rate  # Use capture rate for duration calcs
 
         # Test that MLX Whisper is available
         self.use_mock = not self._test_mlx_available()

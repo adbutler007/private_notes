@@ -18,6 +18,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var settingsWindow: NSWindow?
     private var wizardWindow: NSWindow?
     private var selectedApp: SCRunningApplication?
+    
+    private var engineProcess: Process?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Write to file to confirm this method is called
@@ -25,6 +27,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         print("=== Audio Summary starting ===")
         NSLog("Audio Summary starting...")
+        
+        // Start the backend engine
+        startEngine()
 
         // Ensure app can present UI (even with LSUIElement)
         NSApp.setActivationPolicy(.accessory)
@@ -58,6 +63,70 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         } else {
             print("App ready - first run already completed")
             NSLog("App ready - first run already completed")
+        }
+    }
+
+    func applicationWillTerminate(_ notification: Notification) {
+        print("App terminating, stopping engine...")
+        engineProcess?.terminate()
+    }
+
+    // MARK: - Engine Management
+    
+    private func startEngine() {
+        // Try to find uv in common locations
+        let uvPaths = [
+            "/opt/homebrew/bin/uv",  // Homebrew on Apple Silicon
+            "/usr/local/bin/uv",     // Homebrew on Intel
+            FileManager.default.homeDirectoryForCurrentUser.path + "/.local/bin/uv"  // User install
+        ]
+        
+        guard let uvPath = uvPaths.first(where: { FileManager.default.fileExists(atPath: $0) }) else {
+            print("[Engine] uv not found in common locations. Engine will not start automatically.")
+            print("[Engine] User must start manually: cd ~/Projects/private_notes && uv run python -m audio_summary_app.engine.server")
+            return
+        }
+        
+        print("[Engine] Found uv at: \(uvPath)")
+        
+        // Find the project directory (assume it's in ~/Projects/private_notes)
+        let projectPath = FileManager.default.homeDirectoryForCurrentUser.path + "/Projects/private_notes"
+        
+        guard FileManager.default.fileExists(atPath: projectPath + "/audio_summary_app") else {
+            print("[Engine] Project not found at \(projectPath)")
+            print("[Engine] Engine will not start automatically.")
+            return
+        }
+        
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: uvPath)
+        process.arguments = ["run", "python", "-m", "audio_summary_app.engine.server"]
+        process.currentDirectoryURL = URL(fileURLWithPath: projectPath)
+        
+        // Redirect output to log files
+        let logDir = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Library/Logs/AudioSummary")
+        try? FileManager.default.createDirectory(at: logDir, withIntermediateDirectories: true)
+        
+        let logFile = logDir.appendingPathComponent("engine.log")
+        FileManager.default.createFile(atPath: logFile.path, contents: nil)
+        
+        if let fileHandle = FileHandle(forWritingAtPath: logFile.path) {
+            process.standardOutput = fileHandle
+            process.standardError = fileHandle
+            print("[Engine] Logging to: \(logFile.path)")
+        }
+        
+        do {
+            try process.run()
+            engineProcess = process
+            print("[Engine] Started successfully (PID: \(process.processIdentifier))")
+            
+            // Give it a moment to start
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                print("[Engine] Should be ready at http://127.0.0.1:8756")
+            }
+        } catch {
+            print("[Engine] Failed to start: \(error)")
         }
     }
 

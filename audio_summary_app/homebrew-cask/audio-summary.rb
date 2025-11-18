@@ -18,6 +18,7 @@ cask "audio-summary" do
 
   # Required dependencies
   depends_on formula: "ollama"
+  depends_on formula: "uv"  # Python package manager for engine
 
   # Recommend BlackHole in caveats instead of a hard dependency
 
@@ -32,6 +33,16 @@ cask "audio-summary" do
                      args: ["-dr", "com.apple.quarantine", "#{appdir}/Audio Summary.app"],
                      must_succeed: false
     rescue StandardError
+    end
+
+    # Install Python dependencies for the engine
+    project_path = "#{Dir.home}/Projects/private_notes"
+    if Dir.exist?(project_path)
+      puts "Installing Python dependencies for Audio Summary engine..."
+      system_command "/opt/homebrew/bin/uv",
+                     args: ["sync"],
+                     chdir: project_path,
+                     must_succeed: false
     end
 
     # Show first-run instructions
@@ -49,6 +60,9 @@ cask "audio-summary" do
          brew install --cask blackhole-2ch
 
       3. Launch Audio Summary from Applications or menu bar
+
+      The app will automatically start the backend engine.
+      Engine logs: ~/Library/Logs/AudioSummary/engine.log
 
       The First-Run Wizard will guide you through setup.
 
