@@ -134,3 +134,4 @@ homebrew-audio-summary/
 secrets.json
 credentials.json
 api_keys.txt
+.build/
