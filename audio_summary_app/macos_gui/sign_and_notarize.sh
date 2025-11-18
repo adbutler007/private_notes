@@ -31,7 +31,7 @@ fi
 echo "1. Code signing..."
 codesign --force --deep --sign "$DEVELOPER_ID" \
     --options runtime \
-    --entitlements "AudioSummaryGUI.entitlements" \
+    --entitlements "entitlements.plist" \
     "$APP_BUNDLE"
 
 echo "   Verifying signature..."
