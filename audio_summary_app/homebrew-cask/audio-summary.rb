@@ -1,6 +1,6 @@
 cask "audio-summary" do
   version "0.2.1"
-  sha256 "b3901a4709e4abb5bc62ddb4b25f4335f5d0b8790709226e6798a858226c0314"  # Update after building: shasum -a 256 AudioSummary-#{version}.zip
+  sha256 "c6fe20d4816c235cd299f1ed48953e0eda3de61617ef380c2e73472ef9e4a504"  # Update after building: shasum -a 256 AudioSummary-#{version}.zip
 
   url "https://github.com/adbutler007/private_notes/releases/download/v#{version}/AudioSummary-#{version}.zip"
   name "Audio Summary"
