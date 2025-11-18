@@ -35,16 +35,6 @@ cask "audio-summary" do
     rescue StandardError
     end
 
-    # Install Python dependencies for the engine
-    project_path = "#{Dir.home}/Projects/private_notes"
-    if Dir.exist?(project_path)
-      puts "Installing Python dependencies for Audio Summary engine..."
-      system_command "/opt/homebrew/bin/uv",
-                     args: ["sync"],
-                     chdir: project_path,
-                     must_succeed: false
-    end
-
     # Show first-run instructions
     puts <<~EOS
       ====================================

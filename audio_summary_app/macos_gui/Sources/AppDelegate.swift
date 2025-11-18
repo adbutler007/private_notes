@@ -74,34 +74,25 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     // MARK: - Engine Management
     
     private func startEngine() {
-        // Try to find uv in common locations
-        let uvPaths = [
-            "/opt/homebrew/bin/uv",  // Homebrew on Apple Silicon
-            "/usr/local/bin/uv",     // Homebrew on Intel
-            FileManager.default.homeDirectoryForCurrentUser.path + "/.local/bin/uv"  // User install
-        ]
-        
-        guard let uvPath = uvPaths.first(where: { FileManager.default.fileExists(atPath: $0) }) else {
-            print("[Engine] uv not found in common locations. Engine will not start automatically.")
-            print("[Engine] User must start manually: cd ~/Projects/private_notes && uv run python -m audio_summary_app.engine.server")
+        // Find the bundled engine startup script
+        guard let resourcePath = Bundle.main.resourcePath else {
+            print("[Engine] Could not find app resources")
             return
         }
         
-        print("[Engine] Found uv at: \(uvPath)")
+        let engineScript = resourcePath + "/engine/start_engine.sh"
         
-        // Find the project directory (assume it's in ~/Projects/private_notes/audio_summary_app)
-        let projectPath = FileManager.default.homeDirectoryForCurrentUser.path + "/Projects/private_notes/audio_summary_app"
-        
-        guard FileManager.default.fileExists(atPath: projectPath + "/pyproject.toml") else {
-            print("[Engine] Project not found at \(projectPath)")
-            print("[Engine] Engine will not start automatically.")
+        guard FileManager.default.fileExists(atPath: engineScript) else {
+            print("[Engine] Bundled engine not found at: \(engineScript)")
+            print("[Engine] This app may not be properly built. Run build_app.sh to rebuild.")
             return
         }
+        
+        print("[Engine] Found bundled engine at: \(engineScript)")
         
         let process = Process()
-        process.executableURL = URL(fileURLWithPath: uvPath)
-        process.arguments = ["run", "python", "-m", "audio_summary_app.engine.server"]
-        process.currentDirectoryURL = URL(fileURLWithPath: projectPath)
+        process.executableURL = URL(fileURLWithPath: "/bin/bash")
+        process.arguments = [engineScript]
         
         // Redirect output to log files
         let logDir = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Library/Logs/AudioSummary")
