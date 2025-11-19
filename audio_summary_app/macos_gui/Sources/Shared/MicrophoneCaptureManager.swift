@@ -104,8 +104,15 @@ class MicrophoneCaptureManager: NSObject {
             )
 
             if status == noErr && bufferListSize > 0 {
-                let bufferListPtr = UnsafeMutablePointer<AudioBufferList>.allocate(capacity: 1)
-                defer { bufferListPtr.deallocate() }
+                // Allocate raw memory of the correct size
+                let bufferListRawPtr = UnsafeMutableRawPointer.allocate(
+                    byteCount: Int(bufferListSize),
+                    alignment: MemoryLayout<AudioBufferList>.alignment
+                )
+                defer { bufferListRawPtr.deallocate() }
+                
+                // Bind to AudioBufferList for API call
+                let bufferListPtr = bufferListRawPtr.bindMemory(to: AudioBufferList.self, capacity: 1)
 
                 status = AudioObjectGetPropertyData(
                     deviceID,
@@ -117,13 +124,12 @@ class MicrophoneCaptureManager: NSObject {
                 )
 
                 if status == noErr {
-                    let bufferList = bufferListPtr.pointee
                     var totalChannels: UInt32 = 0
-
-                    withUnsafePointer(to: &bufferListPtr.pointee.mBuffers) { ptr in
-                        for i in 0..<Int(bufferList.mNumberBuffers) {
-                            totalChannels += ptr.advanced(by: i).pointee.mNumberChannels
-                        }
+                    
+                    // Iterate over buffers safely using the AudioBufferList helper
+                    let buffers = UnsafeMutableAudioBufferListPointer(bufferListPtr)
+                    for buffer in buffers {
+                        totalChannels += buffer.mNumberChannels
                     }
 
                     if totalChannels > 0 {

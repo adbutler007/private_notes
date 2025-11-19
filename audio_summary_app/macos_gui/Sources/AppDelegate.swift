@@ -7,6 +7,12 @@ import SwiftUI
 import ScreenCaptureKit
 import UserNotifications
 
+// Wrapper to safely pass structs as representedObject
+class AudioDeviceWrapper: NSObject {
+    let device: AudioInputDevice
+    init(device: AudioInputDevice) { self.device = device }
+}
+
 class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem!
     private var menu: NSMenu!
@@ -20,8 +26,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var selectedApp: SCRunningApplication?
     
     private var engineProcess: Process?
+    
+    // Cache input devices to avoid blocking the main thread
+    private var cachedInputDevices: [AudioInputDevice] = []
+    private var isFetchingDevices = false
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        // Initial device fetch
+        refreshInputDevices()
+
         // Write to file to confirm this method is called
         try? "applicationDidFinishLaunching called at \(Date())\n".write(toFile: "/tmp/audio_summary_launch.txt", atomically: true, encoding: .utf8)
 
@@ -63,6 +76,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         } else {
             print("App ready - first run already completed")
             NSLog("App ready - first run already completed")
+        }
+    }
+
+    private func refreshInputDevices() {
+        guard !isFetchingDevices else { return }
+        isFetchingDevices = true
+        
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            let devices = MicrophoneCaptureManager.getInputDevices()
+            DispatchQueue.main.async {
+                self?.cachedInputDevices = devices
+                self?.isFetchingDevices = false
+                // Don't force menu update here as it might close an open menu
+            }
         }
     }
 
@@ -186,20 +213,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
             // Audio Input Device submenu (for BlackHole capture)
             let deviceMenu = NSMenu()
-            let inputDevices = MicrophoneCaptureManager.getInputDevices()
-
-            if inputDevices.isEmpty {
-                let noDevicesItem = NSMenuItem(title: "No input devices found", action: nil, keyEquivalent: "")
+            
+            if cachedInputDevices.isEmpty {
+                let noDevicesItem = NSMenuItem(title: "Loading devices...", action: nil, keyEquivalent: "")
                 noDevicesItem.isEnabled = false
                 deviceMenu.addItem(noDevicesItem)
             } else {
-                for device in inputDevices {
+                for device in cachedInputDevices {
                     let item = NSMenuItem(
                         title: device.name,
                         action: #selector(startRecordingFromDevice(_:)),
                         keyEquivalent: ""
                     )
-                    item.representedObject = device
+                    // Use wrapper to ensure safe object lifecycle
+                    item.representedObject = AudioDeviceWrapper(device: device)
+                    
                     // Highlight BlackHole devices
                     if device.name.lowercased().contains("blackhole") {
                         item.title = "⭐ \(device.name)"
@@ -302,7 +330,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func startRecordingFromDevice(_ sender: NSMenuItem) {
-        guard let device = sender.representedObject as? AudioInputDevice else { return }
+        guard let wrapper = sender.representedObject as? AudioDeviceWrapper else { return }
+        let device = wrapper.device
 
         Task {
             await captureController.startRecording(fromDevice: device)
@@ -389,6 +418,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
 extension AppDelegate: NSMenuDelegate {
     func menuWillOpen(_ menu: NSMenu) {
+        // Trigger background refresh of devices
+        refreshInputDevices()
+        
+        // Update menu with current state/cache
         updateMenu()
     }
 }
