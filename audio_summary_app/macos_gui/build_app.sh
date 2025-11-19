@@ -5,7 +5,7 @@
 
 set -e  # Exit on error
 
-VERSION="${1:-0.2.1}"  # Default to 0.2.1 if not specified
+VERSION="${1:-0.2.2}"  # Default to 0.2.2 if not specified
 APP_NAME="Audio Summary"
 BUNDLE_ID="com.audiosummary.gui"
 BUILD_DIR=".build"
@@ -27,6 +27,12 @@ echo "3. Creating app bundle..."
 APP_BUNDLE="$DIST_DIR/${APP_NAME}.app"
 mkdir -p "$APP_BUNDLE/Contents/MacOS"
 mkdir -p "$APP_BUNDLE/Contents/Resources"
+
+# Copy icon
+if [ -f "AudioSummary.icns" ]; then
+    echo "   Copying app icon..."
+    cp "AudioSummary.icns" "$APP_BUNDLE/Contents/Resources/"
+fi
 
 # 4. Copy binary
 echo "4. Copying binary..."
@@ -55,6 +61,8 @@ cat > "$APP_BUNDLE/Contents/Info.plist" <<EOF
     <string>APPL</string>
     <key>CFBundleSignature</key>
     <string>????</string>
+    <key>CFBundleIconFile</key>
+    <string>AudioSummary</string>
     <key>CFBundleSupportedPlatforms</key>
     <array>
         <string>MacOSX</string>
