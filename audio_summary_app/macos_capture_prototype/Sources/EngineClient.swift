@@ -15,8 +15,8 @@ class EngineClient {
 
         // Configure URLSession with reasonable timeouts
         let config = URLSessionConfiguration.default
-        config.timeoutIntervalForRequest = 300.0  // 5min per request (for long summary generation)
-        config.timeoutIntervalForResource = 600.0  // 10min total
+        config.timeoutIntervalForRequest = 30.0  // 30s per request
+        config.timeoutIntervalForResource = 300.0  // 5min total
         self.session = URLSession(configuration: config)
     }
 

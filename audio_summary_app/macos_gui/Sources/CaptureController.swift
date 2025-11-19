@@ -211,7 +211,11 @@ class CaptureController: ObservableObject {
             await flushChunkBuffer(sessionId: sessionId)
         }
 
-        // 3. Stop session
+        // 3. Stop session and generate summary (this can take 1-3 minutes for long recordings)
+        await MainActor.run {
+            bufferStatus = "Generating final summary... (this may take a few minutes)"
+        }
+        
         do {
             let stopRequest = StopSessionRequest(sessionId: sessionId)
             let result = try await engine.stopSession(request: stopRequest)
